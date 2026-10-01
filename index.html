@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roster Design Options</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2316151A'/%3E%3Ctext x='16' y='23' font-family='serif' font-size='20' fill='%23fff' text-anchor='middle'%3ER%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--bg:#f4f1ec;--ink:#16151a;--muted:#5a5860;--line:#d6d1c8}
+  @media (prefers-color-scheme:dark){:root{--bg:#121115;--ink:#f1eee8;--muted:#a19ea6;--line:#2c2a30}}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif;padding:clamp(24px,6vw,72px) 16px}
+  main{max-width:880px;margin:0 auto}
+  h1{font:600 clamp(40px,8vw,72px)/1 Georgia,serif;letter-spacing:-.02em}
+  p{color:var(--muted);margin:12px 0 40px}
+  a{display:grid;grid-template-columns:3ch 1fr auto;gap:16px;align-items:baseline;padding:22px 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}
+  a:last-child{border-bottom:1px solid var(--line)}
+  a:hover strong{text-decoration:underline}
+  strong{font:500 clamp(22px,4vw,30px)/1.2 Georgia,serif}
+  small{color:var(--muted)}
+  span{color:var(--muted);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<main>
+  <h1>Roster</h1>
+  <p>Three landing page directions for an agency platform. Pick one.</p>
+  <nav>
+    <a href="option-1/"><span>01</span><div><strong>Contact sheet</strong><br><small>Grease-pencil marks, 3D polaroid ring</small></div><small>frontend-design</small></a>
+    <a href="option-2/"><span>02</span><div><strong>Soft luxury</strong><br><small>Cream paper, glass sculpture in 3D</small></div><small>soft-skill</small></a>
+    <a href="option-3/"><span>03</span><div><strong>Editorial</strong><br><small>Oversized Bodoni, 3D photo cylinder</small></div><small>Hallmark</small></a>
+  </nav>
+</main>
+</body>
+</html>

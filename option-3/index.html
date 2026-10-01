@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roster — Agency software</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%2316151A%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-family=%27serif%27 font-size=%2720%27 fill=%27%23fff%27 text-anchor=%27middle%27%3ER%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Roster runs the modelling agency: talent board, comp cards, castings, option calendar, approvals and payouts. Demo landing page.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=720&h=960&fit=crop&q=70&auto=format" imagesrcset="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&h=640&fit=crop&q=70&auto=format 480w, https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=720&h=960&fit=crop&q=70&auto=format 720w" imagesizes="(max-width: 767px) 92vw, 32vw" fetchpriority="high">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" integrity="sha384-B2WBjDzEjJpYvhmi2UyEn7rektqkf5suS6sNoyyrf0EBAwBHdkiXxIlU0V5Ru2ed" crossorigin="anonymous"></script>
+<style>
+/* Hallmark · genre: editorial · macrostructure: Marquee Hero · theme: Editorial (catalog) · enrichment: Tier D Three.js cylinder gallery over static image fallback · nav: N6 masthead · footer: Ft1 mast-headed
+ * tone: fashion-magazine editorial, loud · anchor hue: lipstick red 27°
+ * fonts: Bodoni Moda (display, roman only) + Hanken Grotesk (body) + IBM Plex Mono (UI labels)
+ * Hallmark · pre-emit critique: P5 H4 E4 S5 R4 V5
+ */
+:root{
+  --color-paper: oklch(95.5% 0.012 75);
+  --color-paper-2: oklch(91% 0.018 70);
+  --color-paper-3: oklch(86% 0.02 68);
+  --color-ink: oklch(19% 0.012 40);
+  --color-ink-2: oklch(40% 0.012 40);
+  --color-rule: oklch(19% 0.012 40 / 0.2);
+  --color-accent: oklch(51% 0.19 27);
+  --color-accent-hover: oklch(44% 0.17 27);
+  --color-on-accent: oklch(97% 0.01 75);
+  --color-night: oklch(17% 0.012 40);
+  --color-night-2: oklch(23% 0.012 40);
+  --color-night-text: oklch(94% 0.012 75);
+  --color-night-muted: oklch(74% 0.012 70);
+  --color-night-rule: oklch(94% 0.012 75 / 0.18);
+  --color-ok: oklch(52% 0.11 150);
+  --color-hold: oklch(72% 0.13 80);
+  --color-hold-2: oklch(84% 0.08 80);
+  --color-focus: oklch(51% 0.19 27);
+  --color-shadow: oklch(19% 0.012 40 / 0.14);
+
+  --font-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.25rem;
+  --text-xl: clamp(1.5rem, 2.4vw, 2rem);
+  --text-2xl: clamp(2.2rem, 5vw, 4.25rem);
+  --text-3xl: clamp(2.8rem, 8vw, 7.5rem);
+  --text-display: clamp(3.6rem, 14.5vw, 13.5rem);
+
+  --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px;
+  --space-xl: 40px; --space-2xl: 64px; --space-3xl: 112px; --space-4xl: 168px;
+  --gutter: clamp(16px, 4vw, 56px);
+
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in: cubic-bezier(.7,0,.84,0);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  --dur-fast: 160ms; --dur-med: 320ms; --dur-slow: 640ms;
+  --rule-hair: 1px; --rule-thick: 6px;
+  --radius-sm: 2px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{overflow-x:clip}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body);font-size:var(--text-md);line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--font-display);font-style:normal;font-weight:500;margin:0;line-height:.95;letter-spacing:-.02em;overflow-wrap:anywhere;min-width:0}
+p{margin:0}
+.wrap{width:100%;max-width:1440px;margin-inline:auto;padding-inline:var(--gutter)}
+.mono{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.06em;text-transform:uppercase}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px}
+.skip{position:absolute;left:var(--space-md);top:-60px;background:var(--color-ink);color:var(--color-paper);padding:var(--space-sm) var(--space-md);z-index:100}
+.skip:focus{top:var(--space-md)}
+
+/* Buttons — 8 states */
+.btn{display:inline-flex;align-items:center;gap:var(--space-xs);white-space:nowrap;font:600 var(--text-sm)/1 var(--font-body);letter-spacing:.02em;text-decoration:none;padding:14px 22px;border:var(--rule-hair) solid var(--color-ink);border-radius:var(--radius-sm);background:var(--color-ink);color:var(--color-paper);transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out)}
+.btn svg{width:16px;height:16px;transition:transform var(--dur-med) var(--ease-out)}
+.btn:hover{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-on-accent)}
+.btn:hover svg{transform:translate(2px,-2px)}
+.btn:active{transform:translateY(1px)}
+.btn[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.btn--accent{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-on-accent)}
+.btn--accent:hover{background:var(--color-accent-hover);border-color:var(--color-accent-hover)}
+.btn--ghost{background:transparent;color:var(--color-ink)}
+.btn--ghost:hover{background:var(--color-ink);border-color:var(--color-ink);color:var(--color-paper)}
+.link{font-weight:600;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;transition:color var(--dur-fast) var(--ease-out)}
+.link:hover{color:var(--color-accent)}
+
+/* N6 masthead */
+.mast{border-bottom:var(--rule-hair) solid var(--color-ink)}
+.mast__issue{display:flex;justify-content:space-between;gap:var(--space-md);padding-block:var(--space-sm);border-bottom:var(--rule-hair) solid var(--color-rule);color:var(--color-ink-2)}
+.mast__mark{display:block;text-align:center;font-family:var(--font-display);font-weight:800;font-size:clamp(2.6rem,7vw,5.5rem);letter-spacing:.14em;line-height:1;padding-block:var(--space-md) var(--space-sm);text-decoration:none;padding-left:.14em}
+.mast__row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-lg);padding-block:var(--space-sm);border-top:var(--rule-hair) solid var(--color-ink);box-shadow:0 3px 0 -2px var(--color-ink)}
+.mast__links{display:flex;gap:var(--space-lg);list-style:none;margin:0;padding:0}
+.mast__links a{text-decoration:none;font-size:var(--text-sm);font-weight:500;white-space:nowrap;background:linear-gradient(var(--color-accent),var(--color-accent)) 0 100%/0 1px no-repeat;transition:background-size var(--dur-med) var(--ease-out)}
+.mast__links a:hover{background-size:100% 1px}
+.mast__cta{display:flex;gap:var(--space-md);align-items:center}
+.mast__cta .link{font-size:var(--text-sm);white-space:nowrap}
+.mini{position:fixed;inset:0 0 auto;z-index:50;background:var(--color-paper);border-bottom:var(--rule-hair) solid var(--color-ink);transform:translateY(-101%);transition:transform var(--dur-med) var(--ease-out)}
+.mini.is-on{transform:none}
+.mini .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:var(--space-xs)}
+.mini__mark{font-family:var(--font-display);font-weight:800;letter-spacing:.14em;font-size:var(--text-lg);text-decoration:none}
+.mini .btn{padding:10px 16px}
+@media (max-width:860px){.mast__links{display:none}.mast__issue span:last-child{display:none}}
+
+/* Hero — Marquee */
+.hero{position:relative;isolation:isolate;background:var(--color-paper);min-height:calc(100svh - 40px);padding-block:var(--space-xl) var(--space-2xl);overflow:clip}
+.hero__gl{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity var(--dur-slow) var(--ease-out)}
+.hero__gl canvas{width:100%;height:100%;display:block}
+.hero__fallback{position:absolute;right:8vw;top:12%;width:min(32vw,440px);z-index:1;margin:0;transition:opacity var(--dur-slow) var(--ease-out)}
+.hero__fallback img{width:100%;aspect-ratio:3/4;object-fit:cover;filter:grayscale(.15) contrast(1.05)}
+.hero__fallback figcaption{margin-top:var(--space-xs);color:var(--color-ink-2)}
+.hero.gl-on .hero__gl{opacity:1}
+.hero.gl-on .hero__fallback{opacity:0;visibility:hidden}
+.hero__inner{position:relative;z-index:2;pointer-events:none;color:var(--color-paper);mix-blend-mode:difference}
+.hero__inner .hero__hint{color:var(--color-paper)}
+.hero__inner a{pointer-events:auto}
+.hero h1{font-size:var(--text-display);font-weight:600;line-height:.86;letter-spacing:-.04em;}
+.hero h1 .line{display:block;overflow:hidden;padding-bottom:.04em}
+.hero h1 .line > span{display:inline-block}
+.hero h1 .line:nth-child(2){padding-left:12vw}
+.hero h1 .line:nth-child(3){padding-left:4vw}
+.hero__foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--space-xl);margin-top:var(--space-xl);align-items:end}
+.hero__lede{max-width:42ch;font-size:var(--text-lg);line-height:1.45}
+.hero__hint{justify-self:end;display:flex;align-items:center;gap:var(--space-sm);color:var(--color-ink-2)}
+.hero__hint i{display:block;width:1px;height:44px;background:var(--color-ink);transform-origin:top;animation:drip 2.2s var(--ease-in-out) infinite}
+@keyframes drip{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (max-width:767px){
+  .hero{min-height:auto;display:flex;flex-direction:column}
+  .hero__inner{order:1}
+  .hero__inner,.hero__inner .hero__hint{color:var(--color-ink);mix-blend-mode:normal}
+  .hero h1{font-size:clamp(3.6rem,18vw,7rem)}
+  .hero__fallback{order:2;position:relative;right:auto;top:auto;width:auto;margin:var(--space-xl) var(--gutter) 0}
+  .hero__fallback img{aspect-ratio:4/5}
+  .hero__foot{grid-template-columns:minmax(0,1fr)}
+  .hero__hint{justify-self:start}
+}
+
+/* Social proof marquee */
+.rule-thick{height:var(--rule-thick);background:var(--color-ink);border:0;margin:0}
+.proof{padding-block:var(--space-xl);border-bottom:var(--rule-hair) solid var(--color-ink)}
+.proof__label{margin-bottom:var(--space-md);color:var(--color-ink-2)}
+.marquee{display:flex;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marquee__track{display:flex;flex-shrink:0;gap:var(--space-xl);padding-right:var(--space-xl);animation:slide 38s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__track span{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,3.4rem);font-weight:500;white-space:nowrap;letter-spacing:-.01em;transition:color var(--dur-fast) var(--ease-out)}
+.marquee__track span:hover{color:var(--color-accent)}
+.marquee__track b{font-family:var(--font-display);font-weight:400;color:var(--color-accent);align-self:center;font-size:clamp(1.2rem,2vw,1.8rem)}
+@keyframes slide{to{transform:translateX(-100%)}}
+
+/* Features */
+.feature{padding-block:var(--space-3xl);border-bottom:var(--rule-hair) solid var(--color-rule)}
+.feature__head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:var(--space-xl);align-items:end;margin-bottom:var(--space-2xl)}
+.feature h2{font-size:var(--text-2xl)}
+.feature h2 em{font-style:normal;color:var(--color-accent)}
+.feature__body{color:var(--color-ink-2);max-width:46ch}
+.split{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-2xl);align-items:center}
+.split--rev{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.split--rev .split__copy{order:2}
+.split__copy h2{margin-bottom:var(--space-lg)}
+.split__copy .feature__body{margin-bottom:var(--space-lg)}
+.ticks{list-style:none;margin:0;padding:0;border-top:var(--rule-hair) solid var(--color-rule)}
+.ticks li{padding-block:var(--space-sm);border-bottom:var(--rule-hair) solid var(--color-rule);font-size:var(--text-sm);display:flex;gap:var(--space-sm)}
+.ticks li::before{content:"";flex:none;width:8px;height:8px;margin-top:.5em;background:var(--color-accent)}
+@media (max-width:860px){
+  .feature__head,.split,.split--rev{grid-template-columns:minmax(0,1fr)}
+  .split--rev .split__copy{order:0}
+  .feature{padding-block:var(--space-2xl)}
+}
+
+/* Product surface (CSS mockups — no fake browser chrome) */
+.ui{background:var(--color-paper-2);border:var(--rule-hair) solid var(--color-ink);font-size:var(--text-sm)}
+.ui__bar{display:flex;flex-wrap:wrap;gap:var(--space-xs);align-items:center;justify-content:space-between;padding:var(--space-sm) var(--space-md);border-bottom:var(--rule-hair) solid var(--color-ink);background:var(--color-paper)}
+.ui__title{font-family:var(--font-display);font-weight:600;font-size:var(--text-lg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:5px 9px;border:var(--rule-hair) solid var(--color-rule);border-radius:999px;background:var(--color-paper);cursor:pointer;transition:background var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.chip:hover{border-color:var(--color-ink)}
+.chip[aria-pressed="true"]{background:var(--color-ink);color:var(--color-paper);border-color:var(--color-ink)}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.dot--ok{background:var(--color-ok)}.dot--hold{background:var(--color-hold)}.dot--bk{background:var(--color-accent)}
+
+/* Talent board */
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-md);padding:var(--space-md)}
+.tile{position:relative;background:var(--color-paper);padding:8px 8px 12px;border:var(--rule-hair) solid var(--color-rule);transition:transform var(--dur-med) var(--ease-out),box-shadow var(--dur-med) var(--ease-out);cursor:grab}
+.tile:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 18px 30px -18px var(--color-shadow)}
+.tile:nth-child(even):hover{transform:translateY(-6px) rotate(1deg)}
+.tile__img{overflow:hidden;aspect-ratio:4/5;background:var(--color-paper-3)}
+.tile img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:filter var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
+.tile:hover img{filter:grayscale(0);transform:scale(1.05)}
+.tile__name{font-family:var(--font-display);font-weight:600;font-size:1.05rem;margin-top:8px;line-height:1.1}
+.tile__meta{display:flex;justify-content:space-between;gap:6px;font-family:var(--font-mono);font-size:10.5px;color:var(--color-ink-2);margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.tile.is-hidden{display:none}
+@media (max-width:860px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Comp card */
+.comp{position:relative;display:grid;grid-template-columns:minmax(0,1fr);max-width:560px;margin-inline:auto;width:100%}
+.comp__card{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);background:var(--color-paper);border:var(--rule-hair) solid var(--color-ink);box-shadow:12px 12px 0 var(--color-ink);transition:transform var(--dur-med) var(--ease-out),box-shadow var(--dur-med) var(--ease-out)}
+.comp__card:hover{transform:translate(-4px,-4px);box-shadow:16px 16px 0 var(--color-accent)}
+.comp__card img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4}
+.comp__info{padding:var(--space-md) var(--space-md) 56px;display:flex;flex-direction:column;justify-content:space-between;gap:var(--space-md);min-width:0}
+.comp__name{font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,3vw,2.3rem);line-height:.95}
+.stats{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px var(--space-sm);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin:0}
+.stats dt{color:var(--color-ink-2)}
+.stats dd{margin:0;text-align:right}
+.comp__live{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center}
+.polas{display:flex;justify-content:center;gap:var(--space-sm);margin-top:-30px;position:relative;z-index:3}
+.pola{background:var(--color-paper);padding:6px 6px 20px;border:var(--rule-hair) solid var(--color-rule);box-shadow:0 10px 24px -14px var(--color-shadow);width:min(30%,140px)}
+.pola img{aspect-ratio:1;object-fit:cover;width:100%}
+.pola span{display:block;font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;margin-top:5px;color:var(--color-ink-2)}
+
+/* Casting package */
+.pkg__list{list-style:none;margin:0;padding:0}
+.pkg__row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:var(--space-md);align-items:center;padding:var(--space-sm) var(--space-md);border-bottom:var(--rule-hair) solid var(--color-rule);background:var(--color-paper);transition:background var(--dur-fast) var(--ease-out)}
+.pkg__row:hover{background:var(--color-paper-2)}
+.pkg__row img{width:48px;height:60px;object-fit:cover}
+.pkg__who b{font-family:var(--font-display);font-weight:600;font-size:1.05rem;display:block;line-height:1.1}
+.pkg__who small{font-family:var(--font-mono);font-size:10.5px;color:var(--color-ink-2);text-transform:uppercase;letter-spacing:.04em}
+.verdict{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding:5px 8px;border:var(--rule-hair) solid currentColor;white-space:nowrap}
+.verdict--ok{color:var(--color-ok)}.verdict--hold{color:var(--color-ink-2)}.verdict--pass{color:var(--color-ink-2);text-decoration:line-through}
+.pkg__foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-sm);padding:var(--space-sm) var(--space-md);font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--color-ink-2)}
+
+/* Calendar */
+.cal{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cal__grid{display:grid;grid-template-columns:150px repeat(7,minmax(70px,1fr));min-width:720px}
+.cal__grid > div{border-bottom:var(--rule-hair) solid var(--color-rule);border-right:var(--rule-hair) solid var(--color-rule);min-height:64px;position:relative}
+.cal__day{min-height:auto !important;padding:var(--space-xs) var(--space-sm);font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;background:var(--color-paper)}
+.cal__day b{display:block;font-family:var(--font-display);font-size:1.4rem;letter-spacing:0;font-weight:600}
+.cal__who{display:flex;gap:10px;align-items:center;padding:var(--space-xs) var(--space-sm);background:var(--color-paper)}
+.cal__who img{width:36px;height:44px;object-fit:cover}
+.cal__who b{font-family:var(--font-display);font-weight:600;line-height:1.1;font-size:.98rem}
+.bar{position:absolute;top:12px;bottom:12px;left:6px;z-index:1;display:flex;align-items:center;padding:0 10px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform-origin:left;border-radius:var(--radius-sm);transition:filter var(--dur-fast) var(--ease-out)}
+.bar:hover{filter:brightness(1.08)}
+.bar--1{background:var(--color-hold);color:var(--color-ink)}
+.bar--2{background:var(--color-hold-2);color:var(--color-ink);border:1px dashed var(--color-ink-2)}
+.bar--ok{background:var(--color-accent);color:var(--color-on-accent)}
+.bar--travel{background:var(--color-paper-3);color:var(--color-ink)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--space-md);padding:var(--space-sm) var(--space-md);font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em}
+.legend i{display:inline-block;width:18px;height:10px;margin-right:6px;vertical-align:-1px}
+
+/* Ledger */
+.ledger{width:100%;border-collapse:collapse;font-size:var(--text-sm)}
+.ledger th,.ledger td{text-align:left;padding:var(--space-sm) var(--space-md);border-bottom:var(--rule-hair) solid var(--color-rule)}
+.ledger th{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:500;color:var(--color-ink-2);background:var(--color-paper)}
+.ledger td{background:var(--color-paper)}
+.ledger td.num,.ledger th.num{text-align:right;font-variant-numeric:tabular-nums}
+.ledger tr:hover td{background:var(--color-paper-2)}
+.ledger .job{font-family:var(--font-display);font-weight:600}
+.paid{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase}
+@media (max-width:560px){.ledger .hide-s{display:none}.ledger th,.ledger td{padding:var(--space-sm)}}
+
+/* How it works — pinned horizontal */
+.how{background:var(--color-night);color:var(--color-night-text);overflow:hidden}
+.how__head{padding-block:var(--space-3xl) var(--space-xl)}
+.how__head h2{font-size:var(--text-3xl);font-weight:500}
+.how__head p{color:var(--color-night-muted);max-width:44ch;margin-top:var(--space-lg)}
+.how__track{display:flex;gap:var(--space-xl);padding-inline:var(--gutter);padding-bottom:var(--space-3xl);width:max-content}
+.step{width:min(78vw,520px);flex:none;border-top:var(--rule-hair) solid var(--color-night-rule);padding-top:var(--space-lg);display:grid;grid-template-rows:auto auto 1fr;gap:var(--space-md)}
+.step__n{font-family:var(--font-display);font-weight:400;font-size:clamp(6rem,14vw,11rem);line-height:.8;color:var(--color-accent)}
+.step h3{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:500}
+.step p{color:var(--color-night-muted);max-width:38ch}
+.step__img{overflow:hidden;margin-top:var(--space-md);aspect-ratio:4/3;background:var(--color-night-2)}
+.step__img img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.1);transition:filter var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out)}
+.step:hover .step__img img{filter:grayscale(0);transform:scale(1.04)}
+@media (min-width:900px){.how{min-height:100svh}.how__head{padding-block:var(--space-2xl) var(--space-lg)}.how__head h2{font-size:clamp(2.8rem,6vw,5.5rem)}.how__head p{margin-top:var(--space-sm)}.how__track{padding-bottom:var(--space-xl)}.step__n{font-size:clamp(4rem,8vw,7rem)}.step{gap:var(--space-sm)}.step__img{aspect-ratio:auto;height:26vh;margin-top:var(--space-xs)}}
+@media (max-width:899px){.how__track{flex-direction:column;width:auto}.step{width:100%}}
+
+/* Testimonial */
+.quote{padding-block:var(--space-4xl) var(--space-3xl)}
+.quote__grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,8fr);gap:var(--space-2xl);align-items:start}
+.quote figure{margin:0}
+.quote__img{overflow:hidden}
+.quote__img img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.quote blockquote{margin:0;font-family:var(--font-display);font-weight:500;font-size:clamp(2rem,4.6vw,4.2rem);line-height:1.02;letter-spacing:-.02em}
+.quote blockquote .w{display:inline-block}
+.quote blockquote mark{background:linear-gradient(transparent 62%,var(--color-hold-2) 62%);color:inherit}
+.quote cite{display:block;margin-top:var(--space-xl);font-style:normal}
+.quote cite b{font-weight:600}
+.quote cite span{color:var(--color-ink-2)}
+@media (max-width:767px){.quote__grid{grid-template-columns:minmax(0,1fr)}.quote__img{max-width:220px}}
+
+/* Pricing */
+.pricing{padding-block:var(--space-3xl);border-top:var(--rule-thick) solid var(--color-ink)}
+.pricing__head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:var(--space-xl);align-items:end;margin-bottom:var(--space-2xl)}
+.pricing__head h2{font-size:var(--text-2xl)}
+.pricing__head p{color:var(--color-ink-2)}
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:var(--rule-hair) solid var(--color-ink)}
+.tier{position:relative;padding:var(--space-xl) var(--space-lg) var(--space-lg);border-right:var(--rule-hair) solid var(--color-rule);display:flex;flex-direction:column;gap:var(--space-lg);transition:background var(--dur-med) var(--ease-out)}
+.tier:last-child{border-right:0}
+.tier:hover{background:var(--color-paper-2)}
+.tier--pick{background:var(--color-ink);color:var(--color-paper)}
+.tier--pick:hover{background:var(--color-night-2)}
+.tier--pick::before{content:"";position:absolute;inset:-1px 0 auto;height:var(--rule-thick);background:var(--color-accent)}
+.tier__tag{position:absolute;top:var(--space-lg);right:var(--space-lg);color:var(--color-accent)}
+.tier--pick .tier__tag{color:var(--color-hold)}
+.tier h3{font-size:2rem;font-weight:600}
+.tier__price{font-family:var(--font-display);font-size:clamp(3rem,5vw,4.5rem);font-weight:500;line-height:1;letter-spacing:-.03em}
+.tier__price small{font-family:var(--font-body);font-size:var(--text-sm);letter-spacing:0;font-weight:400;color:var(--color-ink-2)}
+.tier--pick .tier__price small,.tier--pick .tier__for{color:var(--color-night-muted)}
+.tier__for{color:var(--color-ink-2);font-size:var(--text-sm)}
+.tier ul{list-style:none;margin:0;padding:0;flex:1}
+.tier li{padding-block:10px;border-bottom:var(--rule-hair) solid var(--color-rule);font-size:var(--text-sm)}
+.tier--pick li{border-color:var(--color-night-rule)}
+.tier .btn{align-self:flex-start}
+.tier--pick .btn--ghost{color:var(--color-paper);border-color:var(--color-paper)}
+.tier--pick .btn--ghost:hover{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-on-accent)}
+.pricing__note{margin-top:var(--space-lg);color:var(--color-ink-2);font-size:var(--text-sm)}
+@media (max-width:900px){.tiers{grid-template-columns:minmax(0,1fr)}.tier{border-right:0;border-bottom:var(--rule-hair) solid var(--color-rule)}.pricing__head{grid-template-columns:minmax(0,1fr)}}
+
+/* CTA */
+.cta{background:var(--color-accent);color:var(--color-on-accent);padding-block:var(--space-4xl) var(--space-3xl);overflow:hidden;position:relative}
+.cta h2{font-size:var(--text-3xl);font-weight:600;line-height:.9;letter-spacing:-.035em;max-width:12ch}
+.cta p{margin-top:var(--space-lg);max-width:44ch;font-size:var(--text-lg)}
+.cta .btn{margin-top:var(--space-xl);background:var(--color-ink);border-color:var(--color-ink);color:var(--color-paper);padding:18px 28px;font-size:var(--text-md)}
+.cta .btn:hover{background:var(--color-paper);border-color:var(--color-paper);color:var(--color-ink)}
+.cta__ghost{position:absolute;right:-4vw;bottom:-6vw;font-family:var(--font-display);font-weight:800;font-size:34vw;line-height:.8;letter-spacing:-.05em;color:var(--color-accent-hover);pointer-events:none;user-select:none;z-index:0}
+.cta .wrap{position:relative;z-index:1}
+
+/* Ft1 footer */
+.foot{padding-block:var(--space-2xl) var(--space-xl)}
+.foot__band{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--space-xl);align-items:end;border-bottom:var(--rule-hair) solid var(--color-ink);padding-bottom:var(--space-lg)}
+.foot__mark{font-family:var(--font-display);font-weight:800;font-size:clamp(2.6rem,6vw,4.5rem);letter-spacing:.12em;line-height:.9}
+.foot__tag{color:var(--color-ink-2);max-width:32ch}
+.foot__links{display:flex;flex-wrap:wrap;gap:var(--space-lg);list-style:none;margin:0;padding:0}
+.foot__links a{text-decoration:none;font-size:var(--text-sm);white-space:nowrap}
+.foot__links a:hover{color:var(--color-accent)}
+.foot__small{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--space-md);margin-top:var(--space-md);color:var(--color-ink-2)}
+@media (max-width:767px){.foot__band{grid-template-columns:minmax(0,1fr)}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:1ms !important;animation-iteration-count:1 !important;transition-duration:120ms !important}
+  .marquee__track{animation:none}
+  .marquee{overflow-x:auto}
+  .tile:hover,.comp__card:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="mini" id="mini" aria-hidden="true">
+  <div class="wrap">
+    <a class="mini__mark" href="#" tabindex="-1">ROSTER</a>
+    <a class="btn btn--accent" href="#" tabindex="-1">Book a demo</a>
+  </div>
+</div>
+
+<header class="mast" id="mast">
+  <div class="wrap">
+    <div class="mast__issue mono"><span>Vol. 03 — The agency edition</span><span>For owners &amp; bookers · Autumn 2026</span></div>
+    <a class="mast__mark" href="#" aria-label="Roster, home">ROSTER</a>
+    <nav class="mast__row" aria-label="Primary">
+      <ul class="mast__links">
+        <li><a href="#board">Board</a></li>
+        <li><a href="#comp">Comp cards</a></li>
+        <li><a href="#castings">Castings</a></li>
+        <li><a href="#calendar">Calendar</a></li>
+        <li><a href="#payouts">Payouts</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <div class="mast__cta">
+        <a class="link" href="#">Sign in</a>
+        <a class="btn" href="#">Book a demo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero__gl" id="hero-gl" aria-hidden="true"></div>
+    <figure class="hero__fallback" id="hero-fallback">
+      <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=720&h=960&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=480&h=640&fit=crop&q=70&auto=format 480w, https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=720&h=960&fit=crop&q=70&auto=format 720w" sizes="(max-width: 767px) 92vw, 32vw" width="720" height="960" alt="Model with long blonde hair in a sheer black top against a dark studio backdrop" fetchpriority="high" loading="eager" decoding="async">
+      <figcaption class="mono">Fig. 01 — Digitals, SS27 board</figcaption>
+    </figure>
+    <div class="wrap hero__inner">
+      <h1 id="hero-title"><span class="line"><span>Faces.</span></span><span class="line"><span>Options.</span></span><span class="line"><span>Paid.</span></span></h1>
+      <div class="hero__foot">
+        <p class="hero__lede">Roster runs the modelling agency on one screen: the board, the comp cards, the castings, the options and the money.</p>
+        <a class="hero__hint mono" href="#board"><i aria-hidden="true"></i>Scroll to turn the board</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule-thick">
+
+  <section class="proof" aria-label="Agencies running Roster (fictional)">
+    <div class="wrap"><p class="proof__label mono">Running the board at</p></div>
+    <div class="marquee">
+      <div class="marquee__track">
+        <span>Maison Vale</span><b>✦</b><span>Northlight Models</span><b>✦</b><span>Kestrel Faces</span><b>✦</b><span>Atlas &amp; Rue</span><b>✦</b><span>Ondine Management</span><b>✦</b><span>Halden Talent</span><b>✦</b><span>Studio Sable</span><b>✦</b><span>Vire Models</span><b>✦</b>
+      </div>
+      <div class="marquee__track" aria-hidden="true">
+        <span>Maison Vale</span><b>✦</b><span>Northlight Models</span><b>✦</b><span>Kestrel Faces</span><b>✦</b><span>Atlas &amp; Rue</span><b>✦</b><span>Ondine Management</span><b>✦</b><span>Halden Talent</span><b>✦</b><span>Studio Sable</span><b>✦</b><span>Vire Models</span><b>✦</b>
+      </div>
+    </div>
+  </section>
+
+  <!-- Talent board -->
+  <section class="feature" id="board" aria-labelledby="board-title">
+    <div class="wrap">
+      <div class="feature__head">
+        <h2 id="board-title" class="reveal">The board, finally <em>on screen.</em></h2>
+        <p class="feature__body reveal">Every face you represent, filterable by division, height, availability and town. Reorder it the way you'd pin polaroids to the wall. Clients only ever see what you share.</p>
+      </div>
+      <div class="ui reveal" role="group" aria-label="Talent board preview">
+        <div class="ui__bar">
+          <span class="ui__title">Women · Main board</span>
+          <div class="chips" id="board-filter">
+            <button class="chip" type="button" aria-pressed="true" data-f="all">All</button>
+            <button class="chip" type="button" aria-pressed="false" data-f="ok">Available</button>
+            <button class="chip" type="button" aria-pressed="false" data-f="hold">On option</button>
+            <button class="chip" type="button" aria-pressed="false" data-f="bk">Booked</button>
+          </div>
+        </div>
+        <div class="board" id="board-grid">
+          <article class="tile" data-s="ok"><div class="tile__img"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Red-haired model in a white tee, looking off to the side"></div><p class="tile__name">Aurelie Fenn</p><p class="tile__meta"><span>177 cm</span><span><span class="dot dot--ok"></span>Available</span></p></article>
+          <article class="tile" data-s="hold"><div class="tile__img"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1509631179647-0177331693ae?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model in striped trousers posing against a teal neon-lit wall"></div><p class="tile__name">Noor Valdés</p><p class="tile__meta"><span>179 cm</span><span><span class="dot dot--hold"></span>1st option</span></p></article>
+          <article class="tile" data-s="bk"><div class="tile__img"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model with a top bun and fringe against a pink backdrop"></div><p class="tile__name">Inès Marr</p><p class="tile__meta"><span>176 cm</span><span><span class="dot dot--bk"></span>Booked</span></p></article>
+          <article class="tile" data-s="ok"><div class="tile__img"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Dark-haired model in a denim jacket against a pale pink wall"></div><p class="tile__name">Sana Okoye</p><p class="tile__meta"><span>175 cm</span><span><span class="dot dot--ok"></span>Available</span></p></article>
+          <article class="tile" data-s="hold"><div class="tile__img"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model with slicked-back hair in a navy top under violet light"></div><p class="tile__name">Mei Lindqvist</p><p class="tile__meta"><span>178 cm</span><span><span class="dot dot--hold"></span>2nd option</span></p></article>
+          <article class="tile" data-s="ok"><div class="tile__img"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1517841905240-472988babdf9?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model in a grey hood and denim jacket against a blue wall"></div><p class="tile__name">Jo Harrow</p><p class="tile__meta"><span>174 cm</span><span><span class="dot dot--ok"></span>Available</span></p></article>
+          <article class="tile" data-s="bk"><div class="tile__img"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model in a yellow tracksuit standing on a seaside promenade"></div><p class="tile__name">Talia Brook</p><p class="tile__meta"><span>180 cm</span><span><span class="dot dot--bk"></span>Booked</span></p></article>
+          <article class="tile" data-s="hold"><div class="tile__img"><img src="https://images.unsplash.com/photo-1496440737103-cd596325d314?w=360&h=480&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1496440737103-cd596325d314?w=240&h=320&fit=crop&q=70&auto=format 240w, https://images.unsplash.com/photo-1496440737103-cd596325d314?w=360&h=480&fit=crop&q=70&auto=format 360w" sizes="(max-width: 860px) 45vw, 22vw" width="360" height="480" loading="lazy" alt="Model with long dark hair in a denim jacket outdoors"></div><p class="tile__name">Rosa Etxeberria</p><p class="tile__meta"><span>177 cm</span><span><span class="dot dot--hold"></span>1st option</span></p></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comp cards -->
+  <section class="feature" id="comp" aria-labelledby="comp-title">
+    <div class="wrap split">
+      <div class="split__copy">
+        <h2 id="comp-title" class="reveal">Comp cards that update <em>themselves.</em></h2>
+        <p class="feature__body reveal">Models upload digitals from a phone between castings. Measurements, sizes and the newest polaroids flow into a print-ready card and a live link, so nobody resends a PDF because someone cut their hair.</p>
+        <ul class="ticks reveal">
+          <li>Print card and live link from the same record</li>
+          <li>Polaroids dated and sorted, oldest drop off the card</li>
+          <li>Metric and imperial on the same card</li>
+        </ul>
+      </div>
+      <div class="comp" role="group" aria-label="Comp card preview">
+        <div class="comp__card" id="comp-card">
+          <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=560&h=746&fit=crop&q=70&auto=format" width="560" height="746" loading="lazy" alt="Comp card headshot: model with a top bun against a pink backdrop">
+          <div class="comp__info">
+            <p class="comp__name">Inès<br>Marr</p>
+            <dl class="stats">
+              <dt>Height</dt><dd>176 · 5'9"</dd>
+              <dt>Bust</dt><dd>81</dd>
+              <dt>Waist</dt><dd>61</dd>
+              <dt>Hips</dt><dd>89</dd>
+              <dt>Shoes</dt><dd>EU 39</dd>
+              <dt>Hair</dt><dd>Dark brown</dd>
+              <dt>Eyes</dt><dd>Hazel</dd>
+            </dl>
+            <p class="comp__live"><span class="dot dot--ok"></span>Live link · updated today</p>
+          </div>
+        </div>
+        <div class="polas" id="polas">
+          <div class="pola"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=240&h=240&fit=crop&crop=faces&q=70&auto=format" width="240" height="240" loading="lazy" alt="Polaroid, front-facing digital"><span>Digital · 02 Oct</span></div>
+          <div class="pola"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=240&h=240&fit=crop&crop=top&q=70&auto=format" width="240" height="240" loading="lazy" alt="Polaroid, close crop of hair and brow"><span>Hair · 02 Oct</span></div>
+          <div class="pola"><img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=240&h=240&fit=crop&crop=bottom&q=70&auto=format" width="240" height="240" loading="lazy" alt="Polaroid, neck and shoulders"><span>Profile · 02 Oct</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Castings + approvals -->
+  <section class="feature" id="castings" aria-labelledby="cast-title">
+    <div class="wrap split split--rev">
+      <div class="split__copy">
+        <h2 id="cast-title" class="reveal">Send the package. Watch it <em>land.</em></h2>
+        <p class="feature__body reveal">Pull faces into a casting package, send it as one link, and see which ones the client opens, holds and approves. Approvals come back as options on the calendar, not as an email thread.</p>
+        <a class="link reveal" href="#">How client approvals work</a>
+      </div>
+      <div class="ui reveal" role="group" aria-label="Casting package preview">
+        <div class="ui__bar"><span class="ui__title">Maison Vale · SS27 lookbook</span><span class="mono">Sent 09:41</span></div>
+        <ul class="pkg__list">
+          <li class="pkg__row"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=96&h=120&fit=crop&q=70&auto=format" width="96" height="120" loading="lazy" alt=""><span class="pkg__who"><b>Noor Valdés</b><small>Opened · 3 views</small></span><span class="verdict verdict--ok">Approved</span></li>
+          <li class="pkg__row"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=120&fit=crop&q=70&auto=format" width="96" height="120" loading="lazy" alt=""><span class="pkg__who"><b>Mei Lindqvist</b><small>Opened · 2 views</small></span><span class="verdict verdict--ok">Approved</span></li>
+          <li class="pkg__row"><img src="https://images.unsplash.com/photo-1496440737103-cd596325d314?w=96&h=120&fit=crop&q=70&auto=format" width="96" height="120" loading="lazy" alt=""><span class="pkg__who"><b>Rosa Etxeberria</b><small>Opened · 1 view</small></span><span class="verdict verdict--hold">Hold</span></li>
+          <li class="pkg__row"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=96&h=120&fit=crop&q=70&auto=format" width="96" height="120" loading="lazy" alt=""><span class="pkg__who"><b>Sana Okoye</b><small>Not opened</small></span><span class="verdict verdict--pass">Pass</span></li>
+        </ul>
+        <div class="pkg__foot"><span>4 faces · link expires in 7 days</span><span>2 approvals → options created</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calendar -->
+  <section class="feature" id="calendar" aria-labelledby="cal-title">
+    <div class="wrap">
+      <div class="feature__head">
+        <h2 id="cal-title" class="reveal">First option, second option, <em>confirmed.</em></h2>
+        <p class="feature__body reveal">The option calendar bookers already think in. Holds stack in order, a release notifies the next in line, and a confirmed job locks the dates on every board the model sits on.</p>
+      </div>
+      <div class="ui reveal" role="group" aria-label="Booking and option calendar preview">
+        <div class="ui__bar"><span class="ui__title">Week of 12 October</span><span class="mono">Main board · Paris</span></div>
+        <div class="cal" tabindex="0" aria-label="Calendar grid, scrolls sideways on small screens">
+          <div class="cal__grid" id="cal-grid">
+            <div class="cal__day"></div>
+            <div class="cal__day">Mon<b>12</b></div><div class="cal__day">Tue<b>13</b></div><div class="cal__day">Wed<b>14</b></div><div class="cal__day">Thu<b>15</b></div><div class="cal__day">Fri<b>16</b></div><div class="cal__day">Sat<b>17</b></div><div class="cal__day">Sun<b>18</b></div>
+
+            <div class="cal__who"><img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=72&h=88&fit=crop&q=70&auto=format" width="72" height="88" loading="lazy" alt=""><b>Noor Valdés</b></div>
+            <div><span class="bar bar--ok" style="width:calc(200% - 12px)">Confirmed · Maison Vale</span></div><div></div><div></div><div><span class="bar bar--1" style="width:calc(100% - 12px)">1st · Kestrel</span></div><div></div><div></div><div></div>
+
+            <div class="cal__who"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=72&h=88&fit=crop&q=70&auto=format" width="72" height="88" loading="lazy" alt=""><b>Mei Lindqvist</b></div>
+            <div></div><div><span class="bar bar--1" style="width:calc(300% - 12px)">1st option · Northlight campaign</span></div><div></div><div></div><div><span class="bar bar--travel" style="width:calc(100% - 12px)">Travel · MIL</span></div><div></div><div></div>
+
+            <div class="cal__who"><img src="https://images.unsplash.com/photo-1496440737103-cd596325d314?w=72&h=88&fit=crop&q=70&auto=format" width="72" height="88" loading="lazy" alt=""><b>Rosa Etxeberria</b></div>
+            <div></div><div><span class="bar bar--2" style="width:calc(200% - 12px)">2nd option · Atlas &amp; Rue</span></div><div></div><div></div><div></div><div><span class="bar bar--ok" style="width:calc(200% - 12px)">Confirmed · Sable</span></div><div></div>
+
+            <div class="cal__who"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=72&h=88&fit=crop&q=70&auto=format" width="72" height="88" loading="lazy" alt=""><b>Talia Brook</b></div>
+            <div><span class="bar bar--travel" style="width:calc(100% - 12px)">Travel · NYC</span></div><div><span class="bar bar--ok" style="width:calc(400% - 12px)">Confirmed · Ondine editorial</span></div><div></div><div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <div class="legend"><span><i style="background:var(--color-hold)"></i>1st option</span><span><i style="background:var(--color-hold-2);outline:1px dashed var(--color-ink-2)"></i>2nd option</span><span><i style="background:var(--color-accent)"></i>Confirmed</span><span><i style="background:var(--color-paper-3)"></i>Travel</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payouts -->
+  <section class="feature" id="payouts" aria-labelledby="pay-title">
+    <div class="wrap split">
+      <div class="split__copy">
+        <h2 id="pay-title" class="reveal">From confirmed to paid, without the <em>spreadsheet.</em></h2>
+        <p class="feature__body reveal">Invoices draft themselves from confirmed jobs, with your commission, usage and expenses applied. When the client pays, talent payouts queue for a booker to approve.</p>
+        <ul class="ticks reveal">
+          <li>Commission and usage set per contract, not per invoice</li>
+          <li>Mother-agency splits handled on the same line</li>
+          <li>Export to your accountant as CSV</li>
+        </ul>
+      </div>
+      <div class="ui reveal" role="group" aria-label="Invoices and payouts preview">
+        <div class="ui__bar"><span class="ui__title">Invoices · October</span><span class="mono">Sample data</span></div>
+        <table class="ledger" id="ledger">
+          <thead><tr><th scope="col">Job</th><th scope="col" class="num hide-s">Gross</th><th scope="col" class="num">Talent</th><th scope="col">Status</th></tr></thead>
+          <tbody>
+            <tr><td class="job">Maison Vale · lookbook</td><td class="num hide-s">€4,800</td><td class="num">€3,840</td><td class="paid"><span class="dot dot--ok"></span>Paid out</td></tr>
+            <tr><td class="job">Studio Sable · e-com</td><td class="num hide-s">€2,200</td><td class="num">€1,760</td><td class="paid"><span class="dot dot--hold"></span>Client paid</td></tr>
+            <tr><td class="job">Ondine · editorial</td><td class="num hide-s">€900</td><td class="num">€720</td><td class="paid"><span class="dot dot--bk"></span>Invoiced</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how" id="how" aria-labelledby="how-title">
+    <div class="wrap how__head">
+      <h2 id="how-title" class="reveal">One job, four moves.</h2>
+      <p class="reveal">Follow a single booking through Roster, from a phone in a casting lobby to money in the model's account.</p>
+    </div>
+    <div class="how__track" id="how-track">
+      <article class="step">
+        <span class="step__n" aria-hidden="true">1</span>
+        <h3>Digitals in</h3>
+        <p>A model shoots polaroids on her phone. Her card and board tile refresh before she leaves the lobby.</p>
+        <div class="step__img"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=720&h=540&fit=crop&q=70&auto=format" width="720" height="540" loading="lazy" alt="Smiling model with long dark hair in a red sweater"></div>
+      </article>
+      <article class="step">
+        <span class="step__n" aria-hidden="true">2</span>
+        <h3>Package out</h3>
+        <p>The booker pulls six faces into a casting package and sends the client one link.</p>
+        <div class="step__img"><img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=720&h=540&fit=crop&q=70&auto=format" width="720" height="540" loading="lazy" alt="Curly-haired model in a black brimmed hat"></div>
+      </article>
+      <article class="step">
+        <span class="step__n" aria-hidden="true">3</span>
+        <h3>Option to confirm</h3>
+        <p>The client approves two. Options land on the calendar in order, and the rest release on their own.</p>
+        <div class="step__img"><img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=720&h=540&fit=crop&q=70&auto=format" width="720" height="540" loading="lazy" alt="Model seated inside a round opening in a concrete wall"></div>
+      </article>
+      <article class="step">
+        <span class="step__n" aria-hidden="true">4</span>
+        <h3>Invoice to payout</h3>
+        <p>The job wraps. Roster drafts the invoice, takes commission, and queues the talent payout.</p>
+        <div class="step__img"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=720&h=540&fit=crop&q=70&auto=format" width="720" height="540" loading="lazy" alt="Bearded model in a grey knit sweater against black"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="quote" aria-label="What a booker says">
+    <div class="wrap quote__grid">
+      <figure class="quote__img reveal"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=480&h=640&fit=crop&q=70&auto=format" width="480" height="640" loading="lazy" alt="Portrait of Tomas Reyes, smiling, in a grey sweater"></figure>
+      <div>
+        <blockquote id="quote-text"><p>We ran options on a whiteboard and a group chat. Now <mark>the board is the calendar,</mark> and the calendar is the invoice.</p></blockquote>
+        <cite class="reveal"><b>Tomas Reyes</b><br><span>Head booker, Ondine Management (fictional)</span></cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="pricing" id="pricing" aria-labelledby="price-title">
+    <div class="wrap">
+      <div class="pricing__head">
+        <h2 id="price-title" class="reveal">Priced by the size of your board.</h2>
+        <p class="reveal">Every plan includes the board, comp cards and casting packages. Per month, billed yearly, VAT extra.</p>
+      </div>
+      <div class="tiers">
+        <article class="tier reveal">
+          <h3>Studio</h3>
+          <p class="tier__price">€290<small> /month</small></p>
+          <p class="tier__for">Boutique agencies and new boards.</p>
+          <ul><li>Up to 40 talent</li><li>Board, comp cards, digitals</li><li>Casting packages</li><li>3 booker seats</li></ul>
+          <a class="btn btn--ghost" href="#">Start with Studio</a>
+        </article>
+        <article class="tier tier--pick reveal">
+          <span class="tier__tag mono">Most agencies</span>
+          <h3>Agency</h3>
+          <p class="tier__price">€690<small> /month</small></p>
+          <p class="tier__for">Full boards with clients on approvals.</p>
+          <ul><li>Up to 150 talent</li><li>Everything in Studio</li><li>Option calendar &amp; client approvals</li><li>Invoicing and talent payouts</li><li>10 booker seats</li></ul>
+          <a class="btn btn--accent" href="#">Start with Agency</a>
+        </article>
+        <article class="tier reveal">
+          <h3>Maison</h3>
+          <p class="tier__price">€1,450<small> /month</small></p>
+          <p class="tier__for">Multi-city agencies and mother agencies.</p>
+          <ul><li>Unlimited talent</li><li>Divisions and cities</li><li>Mother-agency sharing</li><li>SSO and audit log</li><li>Unlimited seats</li></ul>
+          <a class="btn btn--ghost" href="#">Talk to us</a>
+        </article>
+      </div>
+      <p class="pricing__note">Moving from spreadsheets or another board? We import your talent and comp cards on every plan.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" aria-labelledby="cta-title">
+    <span class="cta__ghost" aria-hidden="true" id="cta-ghost">R</span>
+    <div class="wrap">
+      <h2 id="cta-title">Put your board to work.</h2>
+      <p>Thirty minutes with us and your own board on screen. Bring a booker.</p>
+      <a class="btn" href="#">Book a demo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__band">
+      <span class="foot__mark">ROSTER</span>
+      <p class="foot__tag">Agency software, set like a magazine.</p>
+      <ul class="foot__links">
+        <li><a href="#board">Product</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="foot__small mono">
+      <span>© 2026 Roster. Demo site: agencies, people and figures are fictional.</span>
+      <span>Photography via Unsplash</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hero = document.getElementById('hero');
+
+  /* Compact sticky bar after the masthead leaves */
+  var mini = document.getElementById('mini');
+  new IntersectionObserver(function (e) {
+    var on = !e[0].isIntersecting;
+    mini.classList.toggle('is-on', on);
+    mini.setAttribute('aria-hidden', String(!on));
+    mini.querySelectorAll('a').forEach(function (a) { a.tabIndex = on ? 0 : -1; });
+  }).observe(document.getElementById('mast'));
+
+  /* Board filter chips (works with or without motion) */
+  var chips = document.querySelectorAll('#board-filter .chip');
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      chips.forEach(function (x) { x.setAttribute('aria-pressed', String(x === c)); });
+      var f = c.dataset.f;
+      document.querySelectorAll('#board-grid .tile').forEach(function (t) {
+        t.classList.toggle('is-hidden', f !== 'all' && t.dataset.s !== f);
+      });
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    });
+  });
+
+  var heroState = { p: 0 };
+
+  if (!reduce && window.gsap && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    if (window.Lenis) {
+      var lenis = new Lenis({ lerp: 0.1 });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        var id = a.getAttribute('href');
+        if (id.length > 1) a.addEventListener('click', function (ev) { var el = document.querySelector(id); if (el) { ev.preventDefault(); lenis.scrollTo(el, { offset: -60 }); } });
+      });
+    }
+
+    /* Hero entrance */
+    gsap.from('.hero h1 .line > span', { yPercent: 105, duration: 1.1, ease: 'expo.out', stagger: 0.1, delay: 0.05 });
+    gsap.from('.hero__foot > *', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out', stagger: 0.1, delay: 0.5 });
+    gsap.from('#hero-fallback', { clipPath: 'inset(100% 0 0 0)', duration: 1.2, ease: 'expo.out', delay: 0.15 });
+
+    var mm = gsap.matchMedia();
+
+    mm.add('(min-width: 768px)', function () {
+      /* Hero pins briefly; type slides apart while the gallery turns */
+      var tl = gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: '+=70%', pin: true, scrub: 1 } });
+      tl.to('.hero h1 .line:nth-child(1)', { xPercent: -5, ease: 'none' }, 0)
+        .to('.hero h1 .line:nth-child(2)', { xPercent: 8, ease: 'none' }, 0)
+        .to('.hero h1 .line:nth-child(3)', { xPercent: -5, ease: 'none' }, 0)
+        .to('#hero-fallback', { yPercent: -12, rotate: -2, ease: 'none' }, 0)
+        .to(heroState, { p: 1, ease: 'none' }, 0);
+    });
+
+    mm.add('(min-width: 900px)', function () {
+      /* Pinned horizontal steps */
+      var track = document.getElementById('how-track');
+      var dist = function () { return Math.max(0, track.scrollWidth - innerWidth); };
+      gsap.to(track, { x: function () { return -dist(); }, ease: 'none',
+        scrollTrigger: { trigger: '#how', start: 'top top', end: function () { return '+=' + dist(); }, pin: true, scrub: 1, invalidateOnRefresh: true } });
+    });
+
+    /* Staggered reveals */
+    gsap.set('.reveal', { opacity: 0 });
+    ScrollTrigger.batch('.reveal', {
+      start: 'top 88%', once: true,
+      onEnter: function (els) { gsap.fromTo(els, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out', stagger: 0.08 }); }
+    });
+
+    gsap.from('#board-grid .tile', { y: 60, opacity: 0, rotate: function (i) { return i % 2 ? 3 : -3; }, duration: 0.9, ease: 'power3.out', stagger: 0.06,
+      scrollTrigger: { trigger: '#board-grid', start: 'top 80%', once: true } });
+
+    /* Polaroids fan out with scroll */
+    gsap.fromTo('#polas .pola', { y: -80, rotate: 0, opacity: 0 }, { y: 0, opacity: 1, rotate: function (i) { return [-8, 3, 9][i]; }, ease: 'none',
+      scrollTrigger: { trigger: '#comp', start: 'top 70%', end: 'center 50%', scrub: 1 } });
+    gsap.from('#comp-card', { rotate: -4, y: 60, ease: 'none', scrollTrigger: { trigger: '#comp', start: 'top bottom', end: 'center center', scrub: 1 } });
+
+    gsap.from('.pkg__row', { x: 40, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1, scrollTrigger: { trigger: '.pkg__list', start: 'top 80%', once: true } });
+
+    gsap.from('#cal-grid .bar', { scaleX: 0, duration: 0.9, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '#cal-grid', start: 'top 75%', once: true } });
+
+    gsap.from('#ledger tbody tr', { y: 24, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.12, scrollTrigger: { trigger: '#ledger', start: 'top 80%', once: true } });
+
+    gsap.from('.step__n', { yPercent: 60, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.1, scrollTrigger: { trigger: '#how', start: 'top 60%', once: true } });
+
+    /* Quote words */
+    var q = document.querySelector('#quote-text p');
+    (function splitWords(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (w) {
+            if (!w) return;
+            if (/^\s+$/.test(w)) { frag.appendChild(document.createTextNode(w)); return; }
+            var s = document.createElement('span'); s.className = 'w'; s.textContent = w; frag.appendChild(s);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if (n.nodeType === 1) splitWords(n);
+      });
+    })(q);
+    gsap.from('#quote-text .w', { opacity: 0.12, ease: 'none', stagger: 0.05, scrollTrigger: { trigger: '#quote-text', start: 'top 80%', end: 'bottom 45%', scrub: true } });
+    gsap.from('.quote__img img', { scale: 1.25, ease: 'none', scrollTrigger: { trigger: '.quote', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+    gsap.fromTo('#cta-ghost', { xPercent: 30, rotate: -8 }, { xPercent: -10, rotate: 0, ease: 'none', scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'bottom top', scrub: true } });
+    gsap.from('.cta h2', { y: 80, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: '.cta', start: 'top 75%', once: true } });
+
+    addEventListener('load', function () { ScrollTrigger.refresh(); });
+  }
+
+  initGallery();
+
+  /* ---------- 3D cylindrical gallery (lazy, progressive) ---------- */
+  function initGallery() {
+    var mem = navigator.deviceMemory;
+    if (reduce || innerWidth < 640 || (mem && mem <= 4) || !hasWebGL()) return; /* static figure stays */
+    var go = function () {
+      (window.requestIdleCallback || function (f) { setTimeout(f, 300); })(function () {
+        import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js').then(build).catch(function () {});
+      });
+    };
+    if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });
+  }
+
+  function hasWebGL() {
+    try { var c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) { return false; }
+  }
+
+  /* Resolve a CSS colour token (OKLCH) to sRGB 0..1 for three.js */
+  function tokenRGB(name) {
+    var c = document.createElement('canvas'); c.width = c.height = 1;
+    var x = c.getContext('2d');
+    x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    x.fillRect(0, 0, 1, 1);
+    var d = x.getImageData(0, 0, 1, 1).data;
+    return [d[0] / 255, d[1] / 255, d[2] / 255];
+  }
+
+  function build(THREE) {
+    var host = document.getElementById('hero-gl');
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    host.appendChild(renderer.domElement);
+
+    var scene = new THREE.Scene();
+    var paper = tokenRGB('--color-paper'), back = tokenRGB('--color-paper-3');
+    var fogColor = new THREE.Color().setRGB(paper[0], paper[1], paper[2], THREE.SRGBColorSpace);
+    scene.fog = new THREE.Fog(fogColor, 9.5, 15.5);
+    var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
+    camera.position.set(0, 0, 12);
+
+    var ids = ['1524504388940-b1c1722653e1','1529626455594-4ff0802cfb7e','1509631179647-0177331693ae','1531746020798-e6953c6e8e04','1506794778202-cad84cf45f1d','1488426862026-3ee34a7d66df','1534528741775-53994a69daeb','1539571696357-5a69c17a67c6','1515886657613-9f3515b0c78f','1494790108377-be9c29b29330','1488161628813-04466f872be2','1496440737103-cd596325d314'];
+    var N = ids.length, R = 3.2, H = 2.15, slot = Math.PI * 2 / N, arc = slot * 0.86;
+    var group = new THREE.Group();
+    var rig = new THREE.Group();
+    rig.add(group); scene.add(rig);
+    var loader = new THREE.TextureLoader(); loader.setCrossOrigin('anonymous');
+    var backMat = new THREE.MeshBasicMaterial({ color: new THREE.Color().setRGB(back[0], back[1], back[2], THREE.SRGBColorSpace), side: THREE.BackSide });
+    var loaded = 0;
+    ids.forEach(function (id, i) {
+      var geo = new THREE.CylinderGeometry(R, R, H, 20, 1, true, i * slot - arc / 2, arc);
+      var mat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.FrontSide, transparent: true, opacity: 0 });
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.y = (i % 2 ? 0.28 : -0.28);
+      var backMesh = new THREE.Mesh(geo, backMat); backMesh.position.y = mesh.position.y;
+      group.add(mesh, backMesh);
+      loader.load('https://images.unsplash.com/photo-' + id + '?w=480&h=640&fit=crop&q=70&auto=format', function (tex) {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+        mat.map = tex; mat.needsUpdate = true; mesh.userData.fade = true;
+        if (++loaded === 4) hero.classList.add('gl-on');
+      });
+    });
+    rig.rotation.z = -0.08;
+
+    function layout() {
+      var w = host.clientWidth, h = host.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      rig.position.x = w > 1100 ? 2.6 : 1.6;
+      rig.position.y = -0.2;
+    }
+    layout(); addEventListener('resize', layout);
+
+    var mx = 0, my = 0, tx = 0, ty = 0;
+    addEventListener('pointermove', function (e) { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }, { passive: true });
+
+    var visible = true, raf = 0, clock = new THREE.Clock(), drift = 0;
+    function frame() {
+      raf = 0;
+      if (!visible || document.hidden) return;
+      var dt = Math.min(clock.getDelta(), 0.05);
+      drift += dt * 0.06;
+      tx += (mx - tx) * 0.05; ty += (my - ty) * 0.05;
+      group.rotation.y = drift + heroState.p * Math.PI * 1.25 + tx * 0.35;
+      rig.rotation.x = 0.1 + ty * 0.12;
+      camera.position.x = tx * 0.6; camera.lookAt(rig.position.x * 0.35, 0, 0);
+      group.children.forEach(function (m) { if (m.userData.fade && m.material.opacity < 1) m.material.opacity = Math.min(1, m.material.opacity + dt * 1.5); });
+      renderer.render(scene, camera);
+      raf = requestAnimationFrame(frame);
+    }
+    function wake() { if (!raf && visible && !document.hidden) { clock.getDelta(); raf = requestAnimationFrame(frame); } }
+    new IntersectionObserver(function (e) { visible = e[0].isIntersecting; wake(); }).observe(hero);
+    document.addEventListener('visibilitychange', wake);
+    wake();
+  }
+});
+</script>
+</body>
+</html>

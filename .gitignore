@@ -1,0 +1,4 @@
+*.log
+.impeccable/
+.claude/
+.playwright-mcp/

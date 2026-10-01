@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en" class="js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roster, the agency board</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%2316151A%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-family=%27serif%27 font-size=%2720%27 fill=%27%23fff%27 text-anchor=%27middle%27%3ER%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Roster runs the modelling agency: talent board, digital comp cards and polaroids, casting packages, options and bookings, client approvals and payouts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Permanent+Marker&display=optional" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Permanent+Marker&display=optional"></noscript>
+<style>
+:root{
+  --backdrop:#DDDCD8;   /* cool seamless-paper grey */
+  --paper:#F6F6F3;      /* print paper */
+  --ink:#16151A;        /* darkroom ink */
+  --silver:#55545A;     /* secondary text, AA on backdrop */
+  --rule:#BDBCB8;
+  --marker:#D0142A;     /* china-marker red */
+  --wide:"Archivo",system-ui,sans-serif;
+  --hand:"Permanent Marker","Comic Sans MS",cursive;
+  --gutter:clamp(16px,4vw,56px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--backdrop);color:var(--ink);font-family:var(--wide);font-size:1.0625rem;line-height:1.55;overflow-x:clip;-webkit-font-smoothing:antialiased}
+main{overflow-x:clip}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--marker);outline-offset:3px}
+.wrap{padding-inline:var(--gutter);max-width:1440px;margin-inline:auto}
+.display{font-stretch:125%;font-weight:800;letter-spacing:-.035em;line-height:.92}
+h2.display{font-size:clamp(2.1rem,6vw,5.2rem)}
+.lede{max-width:34ch;font-size:clamp(1.05rem,1.4vw,1.25rem);color:var(--ink)}
+.hand{font-family:var(--hand);color:var(--marker);font-weight:400;letter-spacing:0}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:.6em;padding:.95em 1.5em;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-stretch:110%;font-size:.95rem;transition:background .3s,color .3s,transform .3s}
+.btn:hover{background:var(--marker)}
+.btn--ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn--ghost:hover{background:var(--ink);color:var(--paper)}
+.mono-img{filter:grayscale(1) contrast(1.05);transition:filter .6s}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:100;background:var(--paper);padding:.5em 1em}
+
+/* NAV */
+.nav{position:fixed;inset:0 0 auto;z-index:50;transition:background .4s,backdrop-filter .4s}
+.nav.scrolled{background:rgba(221,220,216,.82);backdrop-filter:blur(12px)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-stretch:125%;font-weight:900;font-size:1.35rem;letter-spacing:-.04em;text-decoration:none}
+.nav ul{display:flex;gap:2rem;list-style:none}
+.nav ul a{text-decoration:none;font-size:.95rem;position:relative}
+.nav ul a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .4s}
+.nav ul a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav .btn{padding:.7em 1.2em;font-size:.875rem}
+@media (max-width:860px){.nav ul{display:none}}
+
+/* HERO */
+.hero{padding-top:118px;overflow:hidden}
+.hero h1{font-size:clamp(2.1rem,10vw,5.4rem);position:relative;z-index:2}
+@media (min-width:861px){.hero h1{font-size:min(5.6vw,6.4rem)}}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center;gap:1rem}
+.stage{position:relative;height:clamp(360px,38vw,540px);margin-right:calc(var(--gutter) * -1)}
+.stage canvas{position:absolute;inset:0;width:100%!important;height:100%!important;opacity:0;transition:opacity 1.2s ease}
+.stage.live canvas{opacity:1}
+.stage.live .fan{opacity:0;transition:opacity 1.2s ease}
+.fan{position:absolute;inset:0;display:grid;place-items:center}
+.fan figure{grid-area:1/1;width:42%;background:#fff;padding:8px 8px 34px;box-shadow:0 24px 40px -22px rgba(22,21,26,.55)}
+.fan figure img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.fan figure:nth-child(1){transform:translateX(-46%) rotate(-11deg)}
+.fan figure:nth-child(2){transform:translateY(-4%) rotate(2deg);z-index:2}
+.fan figure:nth-child(3){transform:translateX(46%) rotate(10deg)}
+@media (max-width:860px){.hero-top{grid-template-columns:1fr}.stage{height:clamp(300px,80vw,460px);margin-right:0}}
+@media (max-width:639px){.stage{display:none}}
+.hl{display:block;overflow:hidden;padding-bottom:.06em}
+.hl>span{display:block}
+/* Hero entrances start at first paint, independent of external scripts. */
+.hl>span{animation:hero-line .75s cubic-bezier(.16,1,.3,1) backwards}
+.hero-copy{animation:hero-copy .7s cubic-bezier(.16,1,.3,1) backwards}
+.sheet,.fan{animation:hero-sheet .8s cubic-bezier(.16,1,.3,1) backwards}
+.frame .note{animation:hero-note .7s cubic-bezier(.16,1,.3,1) backwards}
+.ring path{stroke-dasharray:1;animation:hero-ring .8s ease-in-out backwards}
+@keyframes hero-line{from{transform:translateY(35%) rotate(2deg)}to{transform:translateY(0) rotate(0)}}
+@keyframes hero-copy{from{opacity:.3;translate:0 16px}to{opacity:1;translate:0 0}}
+@keyframes hero-sheet{from{translate:0 20px}to{translate:0 0}}
+@keyframes hero-note{from{scale:.6;opacity:.3}to{scale:1;opacity:1}}
+@keyframes hero-ring{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.hero-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin:clamp(1.6rem,3vw,2.6rem) 0 clamp(2rem,4vw,3.4rem)}
+.hero-foot .actions{display:flex;gap:.8rem;flex-wrap:wrap}
+.sheet{position:relative;padding-block:14px;background:var(--ink);color:var(--paper)}
+.strip{display:flex;width:max-content;gap:10px;padding-block:5px}
+.frame{position:relative;flex:none;width:clamp(150px,17vw,230px)}
+.frame img{width:100%;aspect-ratio:3/4;object-fit:cover}
+.frame figcaption{display:flex;justify-content:space-between;font-size:.75rem;font-stretch:90%;color:#B9B8BD;padding-top:6px}
+.frame .ring{position:absolute;inset:-14% -18% auto -14%;width:132%;height:auto;pointer-events:none;overflow:visible}
+.ring path,.mark path,.pick path{fill:none;stroke:var(--marker);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.frame .note{position:absolute;right:-6px;top:58%;font-size:1.15rem;transform:rotate(-6deg);background:var(--paper);padding:.05em .4em;border-radius:3px;white-space:nowrap}
+.frame:hover img,.tile:hover img{filter:grayscale(0)}
+
+/* PROOF */
+.proof{padding-block:clamp(3rem,6vw,5rem);border-bottom:1px solid var(--rule)}
+.proof p{font-size:.95rem;color:var(--silver);margin-bottom:1.2rem}
+.agencies{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.agencies .track{display:flex;width:max-content;gap:clamp(2.4rem,5vw,4.5rem);align-items:baseline}
+.agencies span{font-size:clamp(1.4rem,2.6vw,2.2rem);white-space:nowrap;color:var(--ink)}
+.ag1{font-stretch:125%;font-weight:800;letter-spacing:-.03em}
+.ag2{font-stretch:62%;font-weight:500;letter-spacing:.02em}
+.ag3{font-weight:300;font-style:italic}
+.ag4{font-stretch:100%;font-weight:900;letter-spacing:-.05em}
+
+/* FEATURES */
+.feature{padding-block:clamp(5rem,10vw,9rem);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(2rem,5vw,6rem);align-items:center}
+.feature.flip{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.feature.flip .copy{order:2}
+.copy h2{margin-bottom:1.4rem}
+.copy ul{list-style:none;margin-top:1.6rem;border-top:1px solid var(--rule)}
+.copy li{padding:.8rem 0;border-bottom:1px solid var(--rule);font-size:.98rem}
+@media (max-width:900px){.feature,.feature.flip{grid-template-columns:1fr}.feature.flip .copy{order:0}}
+
+.ui{background:var(--paper);border-radius:14px;box-shadow:0 30px 60px -30px rgba(22,21,26,.45),0 0 0 1px rgba(22,21,26,.06);overflow:hidden;font-size:.82rem}
+.ui-bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.8rem 1rem;border-bottom:1px solid #E4E3DF}
+.ui-bar b{font-stretch:115%;font-weight:700}
+.chips{display:flex;gap:.4rem;flex-wrap:wrap}
+.chip{padding:.25em .7em;border-radius:999px;background:#ECEBE7;font-size:.75rem;white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--paper)}
+.ui-meta{color:var(--silver);font-size:.75rem}
+
+/* talent board */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:1rem}
+.tile{position:relative;cursor:pointer}
+.tile .ph{overflow:hidden;border-radius:6px}
+.tile img{aspect-ratio:3/4;object-fit:cover;width:100%;transition:filter .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.tile:hover img{transform:scale(1.06)}
+.tile .nm{font-weight:600;margin-top:.45rem;font-size:.8rem;line-height:1.2}
+.tile .st{display:flex;align-items:center;gap:.35rem;color:var(--silver);font-size:.75rem}
+.dot{width:7px;height:7px;border-radius:50%;background:#2E8B57;flex:none}
+.dot.away{background:#C08A1E}.dot.held{background:var(--marker)}
+@media (max-width:520px){.board{grid-template-columns:repeat(3,1fr)}.board .tile:nth-child(n+7){display:none}}
+
+/* comp card */
+.comp-stage{position:relative;padding:clamp(1rem,3vw,2.5rem) 0}
+.comp{display:grid;grid-template-columns:1.1fr 1fr;background:var(--paper);border-radius:4px;box-shadow:0 30px 60px -30px rgba(22,21,26,.5);max-width:560px;position:relative;z-index:2}
+.comp img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4}
+.comp .side{padding:1.2rem 1.2rem 1rem;display:flex;flex-direction:column}
+.comp .name{font-stretch:125%;font-weight:800;font-size:1.5rem;letter-spacing:-.03em;line-height:1}
+.comp .town{color:var(--silver);font-size:.78rem;margin:.35rem 0 1rem}
+.comp dl{display:grid;grid-template-columns:auto 1fr;gap:.32rem .9rem;font-size:.8rem;margin-top:auto}
+.comp dt{color:var(--silver)}.comp dd{font-weight:600;text-align:right}
+.polas{position:absolute;right:0;bottom:-6%;width:min(46%,250px);height:62%;z-index:3}
+.pola{position:absolute;inset:0;background:#fff;padding:7px 7px 26px;box-shadow:0 18px 30px -16px rgba(22,21,26,.55);transform-origin:50% 90%}
+.pola img{width:100%;height:100%;object-fit:cover}
+.pola .cap{position:absolute;left:10px;bottom:4px;font-family:var(--hand);font-size:.85rem;color:var(--ink)}
+@media (max-width:560px){.comp{grid-template-columns:1fr 1fr}.comp .side{padding:.8rem}.comp .name{font-size:1.15rem}.polas{width:44%;height:48%;bottom:-14%}}
+
+/* casting package */
+.pkg{padding:1rem;display:grid;gap:.6rem}
+.pkg-row{display:grid;grid-template-columns:46px 1fr auto;gap:.8rem;align-items:center;padding:.5rem;border-radius:8px;background:#F0EFEC;position:relative}
+.pkg-row img{width:46px;height:58px;object-fit:cover;border-radius:4px}
+.pkg-row .who{font-weight:600}
+.pkg-row .who small{display:block;font-weight:400;color:var(--silver);font-size:.75rem}
+.state{font-size:.75rem;padding:.3em .7em;border-radius:999px;background:#E2E1DD;white-space:nowrap}
+.state.ok{background:var(--ink);color:var(--paper)}
+.pkg-row .mark{position:absolute;left:-10px;top:-8px;width:68px;height:78px;pointer-events:none;overflow:visible}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:96px repeat(7,minmax(0,1fr));font-size:.75rem}
+.cal>div{border-right:1px solid #E7E6E2;border-bottom:1px solid #E7E6E2;min-height:52px;padding:.35rem;position:relative}
+.cal .hd{min-height:auto;color:var(--silver);font-weight:600;padding:.55rem .35rem}
+.cal .who{display:flex;align-items:center;gap:.45rem;font-weight:600}
+.cal .who img{width:26px;height:26px;border-radius:50%;object-fit:cover}
+.ev{position:absolute;left:4px;top:8px;height:34px;border-radius:5px;padding:.25rem .45rem;line-height:1.2;overflow:hidden;white-space:nowrap;z-index:1;transform-origin:left center}
+.ev small{display:block}
+.ev.conf{background:var(--ink);color:var(--paper)}
+.ev.opt1{background:#fff;box-shadow:inset 0 0 0 1.5px var(--marker);color:var(--marker)}
+.ev.opt2{background:repeating-linear-gradient(135deg,#ECEBE7 0 6px,#E0DFDB 6px 12px);color:var(--ink)}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;padding:.8rem 1rem;color:var(--silver);font-size:.75rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:.35rem}
+.cal-scroll{overflow-x:auto}
+.cal-scroll .cal{min-width:620px}
+
+/* payouts */
+.ledger{width:100%;border-collapse:collapse;font-size:.8rem}
+.ledger th{text-align:left;font-weight:600;color:var(--silver);padding:.6rem 1rem;border-bottom:1px solid #E4E3DF}
+.ledger td{padding:.7rem 1rem;border-bottom:1px solid #EEEDE9}
+.ledger td.n{text-align:right;font-variant-numeric:tabular-nums}
+.ledger th.n{text-align:right}
+.paid{color:#2E7D4F;font-weight:600}.due{color:#80570B;font-weight:600}
+@media (max-width:520px){.ledger .hide-s{display:none}}
+
+/* HOW */
+.how{background:var(--ink);color:var(--paper);padding-block:clamp(5rem,10vw,9rem)}
+.how .lede{color:#C9C8CD}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.5rem,3vw,3rem);margin-top:clamp(3rem,6vw,5rem);list-style:none;counter-reset:s}
+.steps li{border-top:1px solid #3A3940;padding-top:1.4rem}
+.steps .num{font-family:var(--hand);color:#FF7180;font-size:2.6rem;line-height:1}
+.steps h3{font-stretch:120%;font-weight:700;font-size:1.4rem;letter-spacing:-.02em;margin:.8rem 0 .5rem}
+.steps p{color:#C9C8CD;max-width:36ch}
+@media (max-width:820px){.steps{grid-template-columns:1fr}}
+
+/* QUOTE */
+.quote{padding-block:clamp(5rem,10vw,9rem);display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(2rem,5vw,5rem);align-items:end}
+.quote .ph{overflow:hidden;border-radius:4px;aspect-ratio:4/5}
+.quote .ph img{width:100%;height:118%;object-fit:cover}
+.quote blockquote p{font-stretch:112%;font-weight:500;font-size:clamp(1.5rem,3.1vw,2.7rem);line-height:1.12;letter-spacing:-.02em;max-width:24ch}
+.quote cite{display:block;margin-top:1.6rem;font-style:normal;color:var(--silver)}
+.quote cite b{color:var(--ink);font-weight:600}
+@media (max-width:820px){.quote{grid-template-columns:1fr}.quote .ph{max-width:340px}}
+
+/* PRICING */
+.pricing{padding-bottom:clamp(5rem,10vw,9rem)}
+.pricing header{display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap;margin-bottom:clamp(2.5rem,5vw,4rem)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;align-items:stretch}
+.tier{background:var(--paper);border-radius:6px;padding:clamp(1.4rem,2.5vw,2.2rem);display:flex;flex-direction:column;gap:1.1rem;transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.tier:hover{transform:translateY(-6px);box-shadow:0 26px 50px -30px rgba(22,21,26,.5)}
+.tier.feat{background:var(--ink);color:var(--paper)}
+.tier h3{font-stretch:120%;font-weight:700;font-size:1.3rem}
+.tier .for{color:var(--silver);font-size:.92rem;min-height:2.9em}
+.tier.feat .for,.tier.feat li,.tier.feat .price small{color:#C9C8CD}
+.price{font-stretch:125%;font-weight:800;font-size:clamp(2.4rem,4vw,3.4rem);letter-spacing:-.04em;line-height:1;position:relative;display:inline-block}
+.price small{font-size:.9rem;font-weight:500;letter-spacing:0;font-stretch:100%;color:var(--silver)}
+.tier ul{list-style:none;border-top:1px solid var(--rule);font-size:.92rem}
+.tier.feat ul{border-color:#3A3940}
+.tier li{padding:.6rem 0;border-bottom:1px solid var(--rule)}
+.tier.feat li{border-color:#3A3940}
+.tier .btn{margin-top:auto;justify-content:center}
+.tier.feat .btn{background:var(--paper);color:var(--ink)}
+.tier.feat .btn:hover{background:var(--marker);color:var(--paper)}
+.tier .pick{position:absolute;left:-12%;top:-22%;width:124%;height:144%;overflow:visible;pointer-events:none}
+.tier .pick-note{color:#FF7180;font-size:1.05rem;transform:rotate(-4deg);display:inline-block;margin-left:.6rem}
+@media (max-width:900px){.tiers{grid-template-columns:1fr}.tier .for{min-height:0}}
+
+/* CTA */
+.cta{padding-block:clamp(5rem,12vw,10rem);text-align:left;border-top:1px solid var(--rule);position:relative;overflow:hidden}
+.cta h2{font-size:clamp(2.5rem,8.5vw,8rem);max-width:12ch}
+.cta .row{display:flex;gap:2rem;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-top:2.2rem}
+.cta .float{position:absolute;width:clamp(110px,14vw,190px);right:var(--gutter);top:14%;transform:rotate(5deg)}
+@media (max-width:760px){.cta .float{display:none}}
+
+/* FOOTER */
+footer{background:var(--ink);color:#C9C8CD;padding-top:clamp(3rem,6vw,5rem);overflow:hidden}
+.fgrid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:2rem;font-size:.92rem}
+.fgrid h2{color:var(--paper);font-weight:600;margin-bottom:.8rem;font-size:.95rem}
+.fgrid ul{list-style:none;display:grid;gap:.45rem}
+.fgrid a{text-decoration:none}.fgrid a:hover{color:var(--paper)}
+@media (max-width:760px){.fgrid{grid-template-columns:1fr 1fr}.fgrid>div:first-child{grid-column:1/-1}}
+.bigmark{font-stretch:125%;font-weight:900;font-size:clamp(3.5rem,19vw,19rem);letter-spacing:-.06em;line-height:.78;color:var(--paper);white-space:nowrap;margin-top:clamp(3rem,6vw,5rem);padding-left:var(--gutter)}
+.legal{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-block:1.4rem;font-size:.8rem;border-top:1px solid #3A3940;margin-top:1rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+  .hl>span,.hero-copy,.sheet,.fan,.frame .note,.ring path{animation:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a href="#" class="logo" aria-label="Roster home">ROSTER</a>
+    <ul>
+      <li><a href="#board">Board</a></li>
+      <li><a href="#castings">Castings</a></li>
+      <li><a href="#calendar">Calendar</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <a href="#" class="btn">Book a demo</a>
+  </div>
+</nav>
+
+<main id="main">
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+    <h1 class="display" aria-label="Every face on your board, one tap from booked.">
+      <span class="hl" aria-hidden="true"><span>Every face</span></span>
+      <span class="hl" aria-hidden="true"><span>on your board,</span></span>
+      <span class="hl" aria-hidden="true"><span>one tap from</span></span>
+      <span class="hl" aria-hidden="true"><span>booked.</span></span>
+    </h1>
+    <div class="stage" id="stage" role="img" aria-label="A ring of model polaroids from the Roster board, slowly turning">
+      <div class="fan" aria-hidden="true">
+        <figure><img class="mono-img" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=320&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=320&h=400&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=480&h=600&fit=crop&q=70&auto=format 480w, https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=640&h=800&fit=crop&q=70&auto=format 640w" sizes="(max-width:639px) 1px, (max-width:860px) 40vw, 23vw" width="200" height="250" alt=""></figure>
+        <figure><img class="mono-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=320&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=320&h=400&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=480&h=600&fit=crop&q=70&auto=format 480w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=640&h=800&fit=crop&q=70&auto=format 640w" sizes="(max-width:639px) 1px, (max-width:860px) 40vw, 23vw" width="200" height="250" alt=""></figure>
+        <figure><img class="mono-img" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=320&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=320&h=400&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=480&h=600&fit=crop&q=70&auto=format 480w, https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=640&h=800&fit=crop&q=70&auto=format 640w" sizes="(max-width:639px) 1px, (max-width:860px) 40vw, 23vw" width="200" height="250" alt=""></figure>
+      </div>
+    </div>
+    </div>
+    <div class="hero-foot">
+      <p class="lede hero-copy">Roster is the agency system for bookers. Digital books and polaroids, casting packages, options and payouts, all on one board your clients actually open.</p>
+      <div class="actions hero-copy">
+        <a href="#" class="btn">Book a demo</a>
+        <a href="#board" class="btn btn--ghost">See the board</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" aria-label="Contact sheet of talent on a Roster board">
+    <div class="strip" data-marquee="-1">
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait, dark hair, looking at camera" fetchpriority="high"><figcaption><span>12</span><span>Ines M.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait in soft light"><figcaption><span>12A</span><span>Sade O.</span></figcaption></figure>
+      <figure class="frame">
+        <img class="mono-img" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1517841905240-472988babdf9?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait with short hair">
+        <svg class="ring" viewBox="0 0 300 380" aria-hidden="true"><path pathLength="1" d="M150 18 C 60 14, 14 90, 22 200 C 30 320, 120 368, 190 352 C 268 334, 292 240, 282 150 C 272 66, 210 22, 128 30"/></svg>
+        <span class="note hand">1st option</span>
+        <figcaption><span>13</span><span>Lena V.</span></figcaption>
+      </figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait, hair pulled back"><figcaption><span>13A</span><span>Mara K.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Male model portrait with beard"><figcaption><span>14</span><span>Theo R.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait, curly hair"><figcaption><span>14A</span><span>Ama D.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait in a bright studio"><figcaption><span>15</span><span>Noor H.</span></figcaption></figure>
+    </div>
+    <div class="strip" data-marquee="1">
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Full-length model shot in a long coat" loading="lazy"><figcaption><span>21</span><span>Juno P.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1509631179647-0177331693ae?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Editorial fashion shot in tailoring" loading="lazy"><figcaption><span>21A</span><span>Iris F.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Male model in a denim jacket" loading="lazy"><figcaption><span>22</span><span>Cass B.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Smiling model portrait" loading="lazy"><figcaption><span>22A</span><span>Elle S.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Male model portrait, short hair" loading="lazy"><figcaption><span>23</span><span>Remy A.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model portrait with long hair" loading="lazy"><figcaption><span>23A</span><span>Vera L.</span></figcaption></figure>
+      <figure class="frame"><img class="mono-img" src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=300&h=400&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=300&h=400&fit=crop&q=70&auto=format 300w, https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=460&h=613&fit=crop&q=70&auto=format 460w" sizes="(max-width:882px) 150px, (max-width:1353px) 17vw, 230px" width="230" height="307" alt="Model in a hat, outdoor light" loading="lazy"><figcaption><span>24</span><span>Odile C.</span></figcaption></figure>
+    </div>
+  </div>
+</header>
+
+<!-- PROOF -->
+<section class="proof" aria-label="Agencies on Roster">
+  <div class="wrap"><p>The board behind 140 agencies in Paris, Milan, London, New York and Seoul.</p></div>
+  <div class="agencies">
+    <div class="track" data-marquee="-1" data-speed="55">
+      <span class="ag1">Maison Vell</span><span class="ag3">Halden &amp; Rue</span><span class="ag2">NORTH ATELIER MODELS</span><span class="ag4">sable.</span><span class="ag1">Oro Faces</span><span class="ag3">Lune Paris</span><span class="ag2">KESTREL MANAGEMENT</span><span class="ag4">ashgrove</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: BOARD -->
+<section class="wrap feature" id="board">
+  <div class="copy">
+    <h2 class="display reveal">The board, live.</h2>
+    <p class="lede reveal">Every model, every measurement, every city they're in this week. Bookers filter by look and availability in seconds, and the board updates the moment a polaroid lands.</p>
+    <ul class="reveal">
+      <li>Filter by height, hair, eyes, city and division</li>
+      <li>Availability pulled straight from the option calendar</li>
+      <li>Women, men, new faces and talent on one board</li>
+    </ul>
+  </div>
+  <div class="ui" data-par="-40">
+    <div class="ui-bar"><b>Women's main board</b><div class="chips"><span class="chip on">In town</span><span class="chip">175+</span><span class="chip">New faces</span></div></div>
+    <div class="board">
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Ines Marlowe"></div><div class="nm">Ines Marlowe</div><div class="st"><span class="dot"></span>Paris</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Sade Okafor"></div><div class="nm">Sade Okafor</div><div class="st"><span class="dot held"></span>On option</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1517841905240-472988babdf9?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1517841905240-472988babdf9?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Lena Voss"></div><div class="nm">Lena Voss</div><div class="st"><span class="dot"></span>Paris</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Mara Kint"></div><div class="nm">Mara Kint</div><div class="st"><span class="dot away"></span>Milan to 14 Oct</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Ama Diallo"></div><div class="nm">Ama Diallo</div><div class="st"><span class="dot"></span>Paris</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Noor Haddad"></div><div class="nm">Noor Haddad</div><div class="st"><span class="dot held"></span>On option</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Vera Lind"></div><div class="nm">Vera Lind</div><div class="st"><span class="dot"></span>Paris</div></div>
+      <div class="tile"><div class="ph"><img class="mono-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=267&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=267&fit=crop&q=70&auto=format 200w, https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=320&h=427&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=440&h=587&fit=crop&q=70&auto=format 440w" sizes="(max-width:520px) calc((100vw - 84px) / 3), (max-width:900px) calc((92vw - 62px) / 4), (max-width:1440px) 12vw, 155px" width="120" height="160" loading="lazy" alt="Elle Sorensen"></div><div class="nm">Elle Sorensen</div><div class="st"><span class="dot away"></span>London to 9 Oct</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: COMP CARD -->
+<section class="wrap feature flip" id="comp">
+  <div class="copy">
+    <h2 class="display reveal">Comp cards that never go stale.</h2>
+    <p class="lede reveal">Measurements, digitals and polaroids live in one record. Update a waist or add new polas and every card, book and package that model sits in refreshes with it.</p>
+    <ul class="reveal">
+      <li>Print-ready PDF and a shareable link from the same card</li>
+      <li>Polaroids uploaded from the booker's phone after a go-see</li>
+      <li>Metric and imperial, switched per client</li>
+    </ul>
+  </div>
+  <div class="comp-stage">
+    <article class="comp" aria-label="Comp card for Ines Marlowe">
+      <img class="mono-img" src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=360&h=479&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=360&h=479&fit=crop&q=70&auto=format 360w, https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=799&fit=crop&q=70&auto=format 600w" sizes="(max-width:560px) 46vw, 293px" width="300" height="400" loading="lazy" alt="Ines Marlowe, editorial full-length shot">
+      <div class="side">
+        <div class="name">Ines<br>Marlowe</div>
+        <div class="town">Paris, Women's main board</div>
+        <dl>
+          <dt>Height</dt><dd>178 cm</dd>
+          <dt>Bust</dt><dd>81</dd>
+          <dt>Waist</dt><dd>60</dd>
+          <dt>Hips</dt><dd>89</dd>
+          <dt>Shoes</dt><dd>40</dd>
+          <dt>Hair</dt><dd>Dark brown</dd>
+          <dt>Eyes</dt><dd>Hazel</dd>
+        </dl>
+      </div>
+    </article>
+    <div class="polas" aria-label="Polaroids">
+      <div class="pola"><img class="mono-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=320&h=384&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=320&h=384&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=600&fit=crop&q=70&auto=format 500w" sizes="(max-width:560px) 40vw, 236px" width="200" height="240" loading="lazy" alt="Polaroid, front"><span class="cap">front</span></div>
+      <div class="pola"><img class="mono-img" src="https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=320&h=384&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=320&h=384&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=500&h=600&fit=crop&q=70&auto=format 500w" sizes="(max-width:560px) 40vw, 236px" width="200" height="240" loading="lazy" alt="Polaroid, profile"><span class="cap">profile</span></div>
+      <div class="pola"><img class="mono-img" src="https://images.unsplash.com/photo-1503104834685-7205e8607eb9?w=320&h=384&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1503104834685-7205e8607eb9?w=320&h=384&fit=crop&q=70&auto=format 320w, https://images.unsplash.com/photo-1503104834685-7205e8607eb9?w=500&h=600&fit=crop&q=70&auto=format 500w" sizes="(max-width:560px) 40vw, 236px" width="200" height="240" loading="lazy" alt="Polaroid, three-quarter"><span class="cap">3/4, 29 Sep</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: CASTINGS -->
+<section class="wrap feature" id="castings">
+  <div class="copy">
+    <h2 class="display reveal">Send a package. Get a yes.</h2>
+    <p class="lede reveal">Pick the girls, pick the shots, send one link. Clients shortlist and approve from their phone, and you see every pick the second they make it.</p>
+    <ul class="reveal">
+      <li>Branded packages with your agency's look</li>
+      <li>Client picks and holds sync back to the board</li>
+      <li>See who opened it and which faces they lingered on</li>
+    </ul>
+  </div>
+  <div class="ui" data-par="-30">
+    <div class="ui-bar"><b>Corvo Studio, SS27 lookbook</b><span class="ui-meta">Opened 4 times</span></div>
+    <div class="pkg">
+      <div class="pkg-row"><img class="mono-img" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=126&fit=crop&q=70&auto=format" width="46" height="58" loading="lazy" alt="Lena Voss">
+        <div class="who">Lena Voss<small>178 cm, Paris</small></div><span class="state ok">Approved</span>
+        <svg class="mark" viewBox="0 0 68 78" aria-hidden="true"><path d="M8 40 L26 62 L62 10"/></svg></div>
+      <div class="pkg-row"><img class="mono-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=126&fit=crop&q=70&auto=format" width="46" height="58" loading="lazy" alt="Sade Okafor">
+        <div class="who">Sade Okafor<small>180 cm, Paris</small></div><span class="state ok">Approved</span>
+        <svg class="mark" viewBox="0 0 68 78" aria-hidden="true"><path d="M8 40 L26 62 L62 10"/></svg></div>
+      <div class="pkg-row"><img class="mono-img" src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=100&h=126&fit=crop&q=70&auto=format" width="46" height="58" loading="lazy" alt="Mara Kint">
+        <div class="who">Mara Kint<small>176 cm, Milan</small></div><span class="state">On hold</span></div>
+      <div class="pkg-row"><img class="mono-img" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=126&fit=crop&q=70&auto=format" width="46" height="58" loading="lazy" alt="Ama Diallo">
+        <div class="who">Ama Diallo<small>177 cm, Paris</small></div><span class="state">Awaiting client</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE: CALENDAR + PAYOUTS -->
+<section class="wrap feature flip" id="calendar">
+  <div class="copy">
+    <h2 class="display reveal">Options, bookings, paid.</h2>
+    <p class="lede reveal">First and second options sit on one calendar. Confirm a job and Roster raises the invoice, takes your commission and queues the model's payout.</p>
+    <ul class="reveal">
+      <li>Options auto-release when the client's hold expires</li>
+      <li>Usage, overtime and travel added to the invoice</li>
+      <li>Payouts in 30 currencies, with statements models can read</li>
+    </ul>
+  </div>
+  <div style="display:grid;gap:1rem">
+    <div class="ui" data-par="-30">
+      <div class="ui-bar"><b>Week of 6 October</b><div class="chips"><span class="chip on">Week</span><span class="chip">Month</span></div></div>
+      <div class="cal-scroll"><div class="cal" role="img" aria-label="Booking calendar: Lena confirmed with Corvo Studio Monday to Tuesday, Sade on first option for Helio Magazine Wednesday, Ama on second option for Maison Ardent Thursday to Friday.">
+        <div class="hd"></div><div class="hd">Mon 6</div><div class="hd">Tue 7</div><div class="hd">Wed 8</div><div class="hd">Thu 9</div><div class="hd">Fri 10</div><div class="hd">Sat 11</div><div class="hd">Sun 12</div>
+        <div class="who"><img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=60&h=60&fit=crop&q=70&auto=format" width="26" height="26" loading="lazy" alt="">Lena</div>
+        <div><span class="ev conf" style="width:calc(200% - 8px)">Corvo Studio<small>Confirmed, 2 days</small></span></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        <div class="who"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop&q=70&auto=format" width="26" height="26" loading="lazy" alt="">Sade</div>
+        <div></div><div></div><div><span class="ev opt1" style="width:calc(100% - 8px)">Helio<small>1st option</small></span></div><div></div><div></div><div></div><div></div>
+        <div class="who"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=60&h=60&fit=crop&q=70&auto=format" width="26" height="26" loading="lazy" alt="">Ama</div>
+        <div></div><div></div><div></div><div><span class="ev opt2" style="width:calc(200% - 8px)">Maison Ardent<small>2nd option</small></span></div><div></div><div></div><div></div>
+        <div class="who"><img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=60&h=60&fit=crop&q=70&auto=format" width="26" height="26" loading="lazy" alt="">Mara</div>
+        <div></div><div></div><div></div><div></div><div></div><div><span class="ev conf" style="width:calc(100% - 8px)">Fenwick &amp; Lark<small>Confirmed</small></span></div><div></div>
+      </div></div>
+      <div class="legend"><span><i style="background:var(--ink)"></i>Confirmed</span><span><i style="box-shadow:inset 0 0 0 1.5px var(--marker);background:#fff"></i>1st option</span><span><i style="background:repeating-linear-gradient(135deg,#ECEBE7 0 3px,#D6D5D1 3px 6px)"></i>2nd option</span></div>
+    </div>
+    <div class="ui" data-par="-12">
+      <table class="ledger">
+        <thead><tr><th>Job</th><th class="hide-s">Talent</th><th class="n">Fee</th><th class="n hide-s">Model payout</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Corvo Studio</td><td class="hide-s">Lena Voss</td><td class="n">€6,400</td><td class="n hide-s">€5,120</td><td class="paid">Paid out</td></tr>
+          <tr><td>Fenwick &amp; Lark</td><td class="hide-s">Mara Kint</td><td class="n">€3,200</td><td class="n hide-s">€2,560</td><td class="due">Invoiced</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how" id="how">
+  <div class="wrap">
+    <h2 class="display reveal">On Roster by Friday.</h2>
+    <p class="lede reveal" style="margin-top:1.2rem">Most agencies move their whole board in a week. We do the heavy lifting.</p>
+    <ol class="steps">
+      <li class="reveal"><span class="num">1</span><h3>Bring your board</h3><p>Send us your spreadsheets, old system export or a folder of PDFs. We map every model, measurement and image.</p></li>
+      <li class="reveal"><span class="num">2</span><h3>Send your first package</h3><p>Pick talent from the board, add a note, share the link. Your client sees your agency's look, not ours.</p></li>
+      <li class="reveal"><span class="num">3</span><h3>Confirm and get paid</h3><p>Turn options into bookings, invoice from the job and pay your models without leaving the calendar.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="wrap quote" aria-label="Customer story">
+  <div class="ph"><img class="mono-img" data-par-img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=680&h=975&fit=crop&q=70&auto=format" srcset="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=680&h=975&fit=crop&q=70&auto=format 680w, https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=960&h=1376&fit=crop&q=70&auto=format 960w" sizes="(max-width:820px) min(340px, 92vw), (max-width:1440px) 33vw, 480px" width="480" height="680" loading="lazy" alt="Portrait of Claire Aubert, head booker"></div>
+  <blockquote>
+    <p class="reveal">"Fashion week used to mean four inboxes and a whiteboard. This September we ran 212 options through Roster and didn't lose one."</p>
+    <cite class="reveal"><b>Claire Aubert</b>, head booker, Maison Vell, Paris</cite>
+  </blockquote>
+</section>
+
+<!-- PRICING -->
+<section class="wrap pricing" id="pricing">
+  <header>
+    <h2 class="display reveal">Priced by the board.</h2>
+    <p class="lede reveal">Every plan includes unlimited bookers, packages and clients. You pay for the talent you represent.</p>
+  </header>
+  <div class="tiers">
+    <article class="tier reveal">
+      <h3>Boutique</h3>
+      <p class="for">For a single board finding its feet.</p>
+      <div class="price">€290<small> / month</small></div>
+      <ul><li>Up to 40 talent</li><li>Comp cards and polaroids</li><li>Casting packages</li><li>Option calendar</li></ul>
+      <a href="#" class="btn btn--ghost">Start with Boutique</a>
+    </article>
+    <article class="tier feat reveal">
+      <h3>Agency <span class="hand pick-note">our bookers' pick</span></h3>
+      <p class="for">For agencies running several divisions.</p>
+      <div class="price">€690<small> / month</small>
+        <svg class="pick" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path d="M100 8 C 40 6, 6 30, 10 56 C 14 84, 70 96, 120 92 C 176 88, 196 64, 190 40 C 184 16, 140 4, 84 12"/></svg>
+      </div>
+      <ul><li>Up to 150 talent</li><li>Client approvals and picks</li><li>Invoicing and model payouts</li><li>Board migration done for you</li></ul>
+      <a href="#" class="btn">Start with Agency</a>
+    </article>
+    <article class="tier reveal">
+      <h3>Group</h3>
+      <p class="for">For networks with offices in several cities.</p>
+      <div class="price">Custom</div>
+      <ul><li>Unlimited talent and offices</li><li>Shared boards across cities</li><li>Mother-agency splits</li><li>Dedicated booking ops lead</li></ul>
+      <a href="#" class="btn btn--ghost">Talk to sales</a>
+    </article>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="wrap">
+    <img class="float mono-img" data-par="-80" src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=380&h=500&fit=crop&q=70&auto=format" width="190" height="250" loading="lazy" alt="Model polaroid">
+    <h2 class="display reveal">Put your board on Roster this season.</h2>
+    <div class="row">
+      <p class="lede reveal">A 30-minute demo with your own talent loaded in. No slides.</p>
+      <a href="#" class="btn reveal">Book a demo</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap fgrid">
+    <div><a href="#" class="logo" style="color:var(--paper)">ROSTER</a><p style="margin-top:.8rem;max-width:30ch">The agency system for bookers. Made in Paris and Seoul.</p></div>
+    <div><h2>Product</h2><ul><li><a href="#board">Talent board</a></li><li><a href="#comp">Comp cards</a></li><li><a href="#castings">Castings</a></li><li><a href="#calendar">Calendar and payouts</a></li></ul></div>
+    <div><h2>Company</h2><ul><li><a href="#">About</a></li><li><a href="#">Customers</a></li><li><a href="#">Careers</a></li></ul></div>
+    <div><h2>Help</h2><ul><li><a href="#">Migration guide</a></li><li><a href="#">Status</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="bigmark" aria-hidden="true">ROSTER</div>
+  <div class="wrap legal"><span>© 2026 Roster. A fictional product for demonstration.</span><span>Photography via Unsplash</span></div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous" defer></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js" integrity="sha384-B2WBjDzEjJpYvhmi2UyEn7rektqkf5suS6sNoyyrf0EBAwBHdkiXxIlU0V5Ru2ed" crossorigin="anonymous" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var root = document.documentElement;
+  var nav = document.querySelector('.nav');
+  addEventListener('scroll', function () { nav.classList.toggle('scrolled', scrollY > 20); }, { passive: true });
+
+  if (!window.gsap || !window.ScrollTrigger) { root.classList.remove('js'); return; }
+  gsap.registerPlugin(ScrollTrigger);
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // China-marker strokes: prep dash so they can be drawn on
+  var strokes = gsap.utils.toArray('.mark path, .pick path');
+  strokes.forEach(function (p) { var l = p.getTotalLength(); p.style.strokeDasharray = l; p.style.strokeDashoffset = reduce ? 0 : l; });
+
+  if (reduce) { root.classList.remove('js'); return; }
+
+  // Lenis smooth scroll synced to ScrollTrigger
+  if (window.Lenis) {
+    var lenis = new Lenis({ lerp: 0.1 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      var id = a.getAttribute('href'); if (id.length < 2) return;
+      a.addEventListener('click', function (e) { var el = document.querySelector(id); if (el) { e.preventDefault(); lenis.scrollTo(el, { offset: -72 }); } });
+    });
+  }
+
+  // Marquees: duplicate content, loop, speed up with scroll velocity
+  var loops = [];
+  document.querySelectorAll('[data-marquee]').forEach(function (track) {
+    var dir = +track.dataset.marquee, kids = Array.from(track.children);
+    kids.forEach(function (k) { var c = k.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.querySelectorAll('img').forEach(function (i) { i.alt = ''; i.loading = 'lazy'; i.removeAttribute('fetchpriority'); }); track.appendChild(c); });
+    var tw = gsap.fromTo(track, { xPercent: dir < 0 ? 0 : -50 }, { xPercent: dir < 0 ? -50 : 0, duration: +(track.dataset.speed || 48), ease: 'none', repeat: -1 });
+    loops.push(tw);
+  });
+  ScrollTrigger.create({ onUpdate: function (s) {
+    var v = Math.min(Math.abs(s.getVelocity()) / 400, 4);
+    loops.forEach(function (tw) { gsap.to(tw, { timeScale: 1 + v, duration: .2, overwrite: true }); gsap.to(tw, { timeScale: 1, duration: 1.2, delay: .25 }); });
+  } });
+
+  // Hero contact sheet drifts and tilts on scroll
+  gsap.to('.sheet', { yPercent: -18, rotate: -2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  gsap.to('.hero h1', { yPercent: 30, autoAlpha: .2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+  // Copy reveals
+  gsap.utils.toArray('.reveal').forEach(function (el) {
+    gsap.from(el, { y: 40, autoAlpha: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+
+  // Mockup parallax
+  gsap.utils.toArray('[data-par]').forEach(function (el) {
+    gsap.fromTo(el, { y: -el.dataset.par }, { y: +el.dataset.par, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
+  gsap.fromTo('[data-par-img]', { yPercent: -12 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: '.quote', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+  // Board tiles deal in
+  gsap.from('.board .tile', { y: 50, autoAlpha: 0, scale: .94, duration: .9, ease: 'expo.out', stagger: { each: .06, grid: 'auto', from: 'start' }, scrollTrigger: { trigger: '.board', start: 'top 80%', once: true } });
+
+  // Polaroids fan out with scroll
+  var polas = gsap.utils.toArray('.pola');
+  gsap.timeline({ scrollTrigger: { trigger: '.comp-stage', start: 'top 75%', end: 'bottom 40%', scrub: 1 } })
+    .fromTo(polas[0], { rotate: 0, x: 0 }, { rotate: -14, x: '-34%', y: 10 }, 0)
+    .fromTo(polas[1], { rotate: 0, x: 0 }, { rotate: -3, x: '-8%' }, 0)
+    .fromTo(polas[2], { rotate: 0, x: 0 }, { rotate: 9, x: '18%', y: -14 }, 0);
+
+  // Casting approvals tick in
+  gsap.timeline({ scrollTrigger: { trigger: '.pkg', start: 'top 75%', once: true } })
+    .from('.pkg-row', { x: 40, autoAlpha: 0, duration: .8, stagger: .1, ease: 'expo.out' })
+    .to('.mark path', { strokeDashoffset: 0, duration: .5, stagger: .25, ease: 'power2.out' }, '-=.3');
+
+  // Calendar events grow into their slots
+  gsap.from('.ev', { scaleX: 0, duration: .9, stagger: .15, ease: 'expo.inOut', scrollTrigger: { trigger: '.cal', start: 'top 80%', once: true } });
+
+  // Featured price gets circled
+  gsap.to('.pick path', { strokeDashoffset: 0, duration: 1, ease: 'power2.inOut', scrollTrigger: { trigger: '.tiers', start: 'top 70%', once: true } });
+
+  // Steps numbers scribble in
+  gsap.from('.steps .num', { scale: 0, rotate: -40, duration: .7, stagger: .15, ease: 'back.out(2.2)', scrollTrigger: { trigger: '.steps', start: 'top 80%', once: true } });
+
+  // Footer wordmark slides across
+  gsap.fromTo('.bigmark', { xPercent: 14 }, { xPercent: 0, ease: 'none', scrollTrigger: { trigger: 'footer', start: 'top bottom', end: 'bottom bottom', scrub: true } });
+
+  // Pause offscreen marquees
+  document.querySelectorAll('[data-marquee]').forEach(function (track, i) {
+    ScrollTrigger.create({ trigger: track, start: 'top bottom', end: 'bottom top', onToggle: function (s) { s.isActive ? loops[i].play() : loops[i].pause(); } });
+  });
+});
+</script>
+<script type="module">
+// 3D polaroid ring. Loaded after first paint; the static .fan stays as LCP + fallback.
+const stage = document.getElementById('stage');
+const lowEnd = innerWidth < 640 || (navigator.deviceMemory && navigator.deviceMemory <= 4);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hasGL = (() => { try { return !!document.createElement('canvas').getContext('webgl2'); } catch { return false; } })();
+
+if (stage && !lowEnd && !reduce && hasGL) {
+  const start = () => (window.requestIdleCallback || setTimeout)(boot, { timeout: 1500 });
+  document.readyState === 'complete' ? start() : addEventListener('load', start, { once: true });
+}
+
+async function boot() {
+  const THREE = await import('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.min.js');
+  await document.fonts.load('40px "Permanent Marker"').catch(() => {});
+
+  const shots = [
+    ['1515886657613-9f3515b0c78f', 'Juno, 21'], ['1529626455594-4ff0802cfb7e', 'Ines, 12'],
+    ['1539571696357-5a69c17a67c6', 'Cass, 22'], ['1517841905240-472988babdf9', '1st option'],
+    ['1509631179647-0177331693ae', 'Iris, 21A'], ['1531123897727-8f129e1688ce', 'Ama, 14A'],
+    ['1506794778202-cad84cf45f1d', 'Theo, 14'], ['1544005313-94ddf0286df2', 'Vera, 23A'],
+    ['1524504388940-b1c1722653e1', 'Noor, 15'], ['1485462537746-965f33f7f6a7', 'Odile, 24'],
+  ];
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  stage.appendChild(renderer.domElement);
+  renderer.domElement.setAttribute('aria-hidden', 'true');
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0xDDDCD8, 7, 13);
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
+  camera.position.set(0, 0.4, 9.2);
+
+  const tilt = new THREE.Group(); scene.add(tilt);
+  const ring = new THREE.Group(); tilt.add(ring);
+  tilt.rotation.x = 0.12;
+  const R = 3.1, W = 1.25, H = 1.5;
+  const geo = new THREE.PlaneGeometry(W, H);
+
+  // Draw each polaroid (white frame, grayscale photo, marker caption) to a canvas texture
+  const makeTex = (id, cap) => new Promise(res => {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const c = document.createElement('canvas'); c.width = 500; c.height = 600;
+      const x = c.getContext('2d');
+      x.fillStyle = '#F6F6F3'; x.fillRect(0, 0, 500, 600);
+      x.filter = 'grayscale(1) contrast(1.06)'; x.drawImage(img, 26, 26, 448, 470); x.filter = 'none';
+      x.font = '38px "Permanent Marker"'; x.fillStyle = cap === '1st option' ? '#D0142A' : '#16151A';
+      x.fillText(cap, 34, 560);
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+      res(t);
+    };
+    img.onerror = () => res(null);
+    img.src = `https://images.unsplash.com/photo-${id}?w=448&h=470&fit=crop&q=70&auto=format`;
+  });
+
+  const texes = await Promise.all(shots.map(s => makeTex(...s)));
+  texes.forEach((tex, i) => {
+    const a = (i / shots.length) * Math.PI * 2;
+    const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex, color: tex ? 0xffffff : 0xF6F6F3, side: THREE.DoubleSide }));
+    m.position.set(Math.sin(a) * R, Math.sin(i * 1.7) * 0.28, Math.cos(a) * R);
+    m.rotation.set(0, a, Math.sin(i * 2.3) * 0.08);
+    m.userData.bob = i;
+    ring.add(m);
+  });
+
+  const size = () => {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  };
+  size(); new ResizeObserver(size).observe(stage);
+
+  const mouse = { x: 0, y: 0 };
+  addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; }, { passive: true });
+
+  let visible = true, running = false, last = performance.now(), spin = 0;
+  const loop = now => {
+    if (!visible || document.hidden) { running = false; return; }
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    spin += dt * 0.16;
+    const sp = Math.min(scrollY / innerHeight, 1.2);           // scroll parallax
+    ring.rotation.y = spin + sp * 1.4;
+    tilt.rotation.x += ((0.12 + mouse.y * 0.35 + sp * 0.25) - tilt.rotation.x) * 0.06;  // tilt toward mouse
+    tilt.rotation.z += ((-mouse.x * 0.12) - tilt.rotation.z) * 0.06;
+    tilt.position.y = sp * 1.6;
+    ring.children.forEach(m => { m.position.y = Math.sin(now / 1100 + m.userData.bob) * 0.12 + Math.sin(m.userData.bob * 1.7) * 0.28; });
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  };
+  const run = () => { if (!running && visible && !document.hidden) { running = true; last = performance.now(); requestAnimationFrame(loop); } };
+
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; run(); }).observe(stage);
+  document.addEventListener('visibilitychange', run);
+  run();
+  requestAnimationFrame(() => stage.classList.add('live'));
+}
+</script>
+</body>
+</html>
