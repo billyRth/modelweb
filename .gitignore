@@ -3,3 +3,4 @@
 .claude/
 .playwright-mcp/
 .perf-browser/
+app-src/node_modules/
